@@ -197,6 +197,7 @@ let mode=2,dif=0,luas=1,topics=['Penjumlahan'],custom=[];
 const SB_URL='ISI_SUPABASE_URL',SB_KEY='ISI_SUPABASE_ANON_KEY'; // ganti dengan milik proyek Supabase Anda
 const CFG={title:'BATTLE OF PRIMAL SPACE',footer:'Developer: SharkArt.evo Education',bgm:'https://youtu.be/DhD0vUDbzPw?si=W3GQMjhQKhqN_a6y',time:300,lives:5,points:10,speed:1,spawn:1,power:1,theme:0,fx:0};
 let S={light:false,bgm:true,sfx:true,th:null,fx:null};
+let dbQ=[];
 try{Object.assign(S,JSON.parse(localStorage.getItem('bps')||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem('bps',JSON.stringify(S))}catch(e){}};
 
@@ -284,7 +285,7 @@ if(!window.YT){const s=document.createElement('script');s.src='https://www.youtu
 document.addEventListener('pointerdown',()=>{ac();if(AC&&AC.state==='suspended')AC.resume();if(!gest){gest=true;bgmSync()}});
 
 /* ===== supabase: akun, leaderboard, admin ===== */
-let sb=null,user=null,dbQ=[],authTab='in',lbm=0,adT=0;
+let sb=null,user=null,authTab='in',lbm=0,adT=0;
 try{if(window.supabase&&!/^ISI_/.test(SB_URL))sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){}
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function applyCfg(){CFG.time=Math.max(30,+CFG.time||300);CFG.lives=Math.min(10,Math.max(1,Math.round(+CFG.lives)||5));CFG.points=Math.max(1,+CFG.points||10);
