@@ -43,7 +43,23 @@ h1{font-weight:900;font-size:clamp(1.5rem,5.2vw,4rem);line-height:1;background:l
 .mat .b3.s{background:#ec4899;color:#fff;box-shadow:0 4px 0 #be185d}
 #start{width:100%;margin-top:2.4vh;font:inherit;font-weight:900;font-size:clamp(1.2rem,3vw,2rem);color:#fff;background:linear-gradient(#4ade80,#059669);border:0;border-radius:18px;padding:1.6vh 0;box-shadow:0 8px 0 #065f46,0 14px 24px #00000066;cursor:pointer}
 #start:active{transform:translateY(4px);box-shadow:0 4px 0 #065f46}
-#gear{position:absolute;right:2vw;top:2vh;z-index:3;font-size:1.6rem;width:48px;height:48px;border-radius:50%;background:#1e293bcc;border:2px solid #475569;color:#fff;cursor:pointer}
+.ib{font:inherit;font-weight:700;font-size:1rem;min-width:44px;height:44px;padding:0 14px;border-radius:22px;background:#1e293bcc;border:2px solid #475569;color:#fff;cursor:pointer}
+#tl{position:absolute;left:2vw;top:2vh;z-index:3}#tr{position:absolute;right:2vw;top:2vh;z-index:3;display:flex;gap:8px}
+#menu{padding-top:9vh}
+.modal{position:absolute;inset:0;z-index:20;background:#000000b3;display:none;align-items:center;justify-content:center;padding:2vh 3vw}
+.modal.on{display:flex}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button{font:inherit;font-weight:700;font-size:.7rem;padding:8px 12px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer}
+.tabs button.s{background:#4f46e5;color:#fff}
+.in{width:100%;padding:10px;margin-bottom:8px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#fff;font:inherit;font-size:.8rem}
+.note{font-size:.7rem;color:#94a3b8;line-height:1.6;margin:8px 0}
+.bt{width:100%;margin-top:8px;font:inherit;font-weight:900;background:#4f46e5;color:#fff;border:0;border-radius:10px;padding:12px;cursor:pointer}
+.cl{width:100%;margin-top:10px;font:inherit;font-weight:900;background:#fff;color:#000;border:0;border-radius:10px;padding:12px;cursor:pointer}
+.sm{font:inherit;font-size:.65rem;font-weight:700;padding:6px 10px;border:0;border-radius:6px;background:#334155;color:#fff;cursor:pointer}
+.tb2{width:100%;border-collapse:collapse;font-size:.75rem}.tb2 th,.tb2 td{padding:7px 6px;text-align:left;border-bottom:1px solid #1e293b}.tb2 th{color:#94a3b8}
+.lbl2{font-size:.65rem;color:#94a3b8;margin:6px 0 3px;display:block}
+#ytw{position:fixed;right:0;bottom:0;width:2px;height:2px;overflow:hidden;opacity:.01;pointer-events:none}
+
 footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-bottom));text-align:center;font-size:clamp(.6rem,1.1vw,.8rem);opacity:.75;pointer-events:none;z-index:9;font-weight:500}
 /* pengaturan */
 #set{position:absolute;inset:0;z-index:20;background:#000000b3;display:none;align-items:center;justify-content:center;padding:2vh 3vw}
@@ -107,8 +123,8 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 <canvas id="stars"></canvas>
 
 <section id="menu" class="screen on">
-  <button id="gear" aria-label="Pengaturan">⚙</button>
-  <div class="logo"><i>🚀</i><h1>BATTLE OF<br>PRIMAL SPACE</h1></div>
+  <div id="tl"><button class="ib" id="acc">👤 Masuk</button></div><div id="tr"><button class="ib" id="lbb" aria-label="Leaderboard">🏆</button><button class="ib" id="adm" aria-label="Admin" hidden>🛠</button><button class="ib" id="mus" aria-label="Musik">🔊</button><button class="ib" id="gear" aria-label="Pengaturan">⚙</button></div>
+  <div class="logo"><i>🚀</i><h1 id="ttl">BATTLE OF<br>PRIMAL SPACE</h1></div>
   <div class="tag">DUEL MATEMATIKA</div>
   <div class="card">
     <div class="h c1">MODE</div>
@@ -139,18 +155,20 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 </section>
 
 <section id="win" class="screen">
-  <h1 id="wt"></h1><p id="ws"></p>
+  <h1 id="wt"></h1><p id="ws"></p><p id="wsave"></p>
   <div class="wb"><button class="b3" id="again" style="background:#10b981;color:#fff;box-shadow:0 5px 0 #047857">MAIN LAGI</button><button class="b3" id="home">MENU UTAMA</button></div>
 </section>
 
 <div id="set">
   <div class="sbox">
     <h2>⚙ PENGATURAN</h2>
-    <div class="row l"><div>Mode Ringan (HP Kentang)<small>Matikan efek berat untuk performa lancar</small></div><button class="sw" id="s-light"></button></div>
+    <div class="row l"><div>Mode Ringan (HP Kentang)<small>Matikan efek tembakan dan bayangan untuk performa lancar</small></div><button class="sw" id="s-light"></button></div>
     <div class="sl">AUDIO</div>
     <div class="row"><span>Musik Latar (BGM)</span><button class="sw" id="s-bgm"></button></div>
     <div class="row"><span>Efek Suara (SFX)</span><button class="sw" id="s-sfx"></button></div>
-    <div class="sl">FILTER VISUAL</div>
+    <div class="sl">TEMA</div>
+    <div class="flt" id="thm"></div>
+    <div class="sl">FILTER VISUAL (EFEK TEMBAKAN)</div>
     <div class="flt" id="flt"></div>
     <div class="sl" style="color:#4ade80">📝 SOAL KUSTOM GURU (CSV)</div>
     <div class="csv">
@@ -162,16 +180,23 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
     <button id="sclose">SIMPAN &amp; TUTUP</button>
   </div>
 </div>
-<footer>Developer: SharkArt.evo Education</footer>
+<div id="auth" class="modal"><div class="sbox" id="authb"></div></div>
+<div id="lb" class="modal"><div class="sbox"><h2>🏆 LEADERBOARD</h2><div class="tabs" id="lbt"></div><div id="lbl"></div><button class="cl">TUTUP</button></div></div>
+<div id="admin" class="modal"><div class="sbox" style="width:min(640px,100%)"><h2>🛠 PANEL ADMIN</h2><div class="tabs" id="adt"></div><div id="adb"></div><button class="cl">TUTUP</button></div></div>
+<div id="ytw"><div id="ytp"></div></div>
+<footer id="ft">Developer: SharkArt.evo Education</footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,P=a=>a[R(0,a.length-1)];
 const gcd=(a,b)=>b?gcd(b,a%b):a;
 let mode=2,dif=0,luas=1,topics=['Penjumlahan'],custom=[];
-let S={light:false,bgm:true,sfx:true,flt:0};
+const SB_URL='ISI_SUPABASE_URL',SB_KEY='ISI_SUPABASE_ANON_KEY'; // ganti dengan milik proyek Supabase Anda
+const CFG={title:'BATTLE OF PRIMAL SPACE',footer:'Developer: SharkArt.evo Education',bgm:'https://youtu.be/DhD0vUDbzPw?si=W3GQMjhQKhqN_a6y',time:300,lives:5,points:10,speed:1,spawn:1,power:1,theme:0,fx:0};
+let S={light:false,bgm:true,sfx:true,th:null,fx:null};
 try{Object.assign(S,JSON.parse(localStorage.getItem('bps')||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem('bps',JSON.stringify(S))}catch(e){}};
 
@@ -200,7 +225,7 @@ const T={
 };
 function makeQ(){
   const pool=topics.slice();let name=P(pool),q,a;
-  if(name==='Soal Kustom'){[q,a]=P(custom)}
+  if(name==='Soal Kustom'){[q,a]=P(custom.concat(dbQ))}
   else{const m=[10,20,50,100][dif]*luas,k=Math.min([5,10,12,20][dif]*(luas>1?1.5:1)|0,30);[q,a]=T[name](m,k)}
   const o=new Set([a]);let sp=Math.max(3,Math.round(Math.abs(a)*.2)),g=0;
   while(o.size<4&&g++<80){const d=a+R(-sp,sp);if(d>=0&&d!==a)o.add(d)}
@@ -211,19 +236,25 @@ function makeQ(){
 /* ===== menu ===== */
 const MAT=Object.keys(T);
 function drawMat(){const box=$('#mat');box.innerHTML='';
-  (custom.length?MAT.concat('Soal Kustom'):MAT).forEach(n=>{const b=document.createElement('button');b.className='b3'+(topics.includes(n)?' s':'');b.textContent=n;
+  (custom.length||dbQ.length?MAT.concat('Soal Kustom'):MAT).forEach(n=>{const b=document.createElement('button');b.className='b3'+(topics.includes(n)?' s':'');b.textContent=n;
     b.onclick=()=>{if(topics.includes(n)){if(topics.length>1)topics=topics.filter(x=>x!==n)}else topics.push(n);drawMat()};box.appendChild(b)})}
 drawMat();
 function grp(sel,attr,fn){$$(sel+' button').forEach(b=>b.onclick=()=>{$$(sel+' button').forEach(x=>x.classList.remove('s'));b.classList.add('s');fn(+b.dataset[attr])})}
 grp('#modes','n',v=>mode=v);grp('#diff','d',v=>dif=v);grp('#seg','l',v=>luas=v);
 
 /* ===== pengaturan ===== */
-const FL=[['Original',''],['Nebula Biru','hue-rotate(-35deg) saturate(1.2)'],['Toxic Green','hue-rotate(-110deg) saturate(1.3)'],['Red Nova','hue-rotate(110deg) saturate(1.2)'],['Deep Purple','hue-rotate(25deg) saturate(1.4) brightness(.9)'],['Monochrome','grayscale(1)']];
+const TH=[['Original',''],['Nebula Biru','hue-rotate(-35deg) saturate(1.2)'],['Toxic Green','hue-rotate(-110deg) saturate(1.3)'],['Red Nova','hue-rotate(110deg) saturate(1.2)'],['Deep Purple','hue-rotate(25deg) saturate(1.4) brightness(.9)'],['Monochrome','grayscale(1)']];
+const FX=['Laser','Plasma','Petir','Api','Komet','Pelangi'];
+const thN=()=>S.th==null?+CFG.theme||0:S.th,fxN=()=>S.fx==null?+CFG.fx||0:S.fx,fx=()=>S.light?0:fxN();
 function applySet(){['light','bgm','sfx'].forEach(k=>$('#s-'+k).classList.toggle('on',S[k]));
-  $('#app').style.filter=FL[S.flt][1];$$('#flt button').forEach((b,i)=>b.classList.toggle('s',i===S.flt));
-  S.bgm?startBgm():stopBgm();initStars()}
-FL.forEach((f,i)=>{const b=document.createElement('button');b.textContent=f[0];b.onclick=()=>{S.flt=i;applySet()};$('#flt').appendChild(b)});
-['light','bgm','sfx'].forEach(k=>$('#s-'+k).onclick=()=>{S[k]=!S[k];applySet()});
+  $('#app').style.filter=TH[thN()][1];
+  $$('#thm button').forEach((b,i)=>b.classList.toggle('s',i===thN()));
+  $$('#flt button').forEach((b,i)=>{b.classList.toggle('s',i===fx());b.disabled=S.light&&i>0;b.style.opacity=S.light&&i>0?.4:1});
+  $('#mus').textContent=S.bgm?'🔊':'🔇';bgmSync();initStars()}
+TH.forEach((f,i)=>{const b=document.createElement('button');b.textContent=f[0];b.onclick=()=>{S.th=i;save();applySet()};$('#thm').appendChild(b)});
+FX.forEach((f,i)=>{const b=document.createElement('button');b.textContent=f;b.onclick=()=>{S.fx=i;save();applySet()};$('#flt').appendChild(b)});
+['light','bgm','sfx'].forEach(k=>$('#s-'+k).onclick=()=>{S[k]=!S[k];save();applySet()});
+$('#mus').onclick=()=>{S.bgm=!S.bgm;save();applySet()};
 $('#gear').onclick=()=>$('#set').classList.add('on');
 $('#sclose').onclick=()=>{save();$('#set').classList.remove('on')};
 $('#tpl').onclick=()=>{const bl=new Blob(['\ufeffPertanyaan,Jawaban\n"Berapa 5 + 3?",8\n"Ibu kota Indonesia ada berapa pulau besar?",5\n'],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='template-soal.csv';a.click()};
@@ -233,13 +264,93 @@ $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileR
   if(rows.length){custom=rows;if(!topics.includes('Soal Kustom'))topics=['Soal Kustom'];drawMat();alert(rows.length+' soal kustom dimuat dan dipilih.')}else alert('Tidak ada soal valid. Pastikan kolom Jawaban berisi angka.')};r.readAsText(f);e.target.value=''};
 
 /* ===== audio ===== */
-let AC=null,bgmT=null,step=0;
+let AC=null;
 const ac=()=>{if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC};
 function beep(f,d,ty,v,f2){if(!S.sfx||!ac())return;const o=AC.createOscillator(),g=AC.createGain();o.type=ty||'square';o.frequency.value=f;if(f2)o.frequency.exponentialRampToValueAtTime(f2,AC.currentTime+d);g.gain.value=v||.08;g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+d)}
-const NOTES=[220,277,330,277,247,311,370,311];
-function startBgm(){if(bgmT||!AC)return;bgmT=setInterval(()=>{if(!S.bgm)return;const n=NOTES[step++%8];if(!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=n;g.gain.value=.05;g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+.4)},300)}
-function stopBgm(){clearInterval(bgmT);bgmT=null}
-document.addEventListener('pointerdown',()=>{ac();if(AC&&AC.state==='suspended')AC.resume();if(S.bgm)startBgm()},{once:false});
+let yt=null,ytOk=false,au=null,curSrc='',gest=false;
+const ytId=u=>{const m=String(u||'').match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:null};
+function bgmSync(){const want=S.bgm&&gest,id=ytId(CFG.bgm);
+  if(id){if(au)au.pause();
+    if(!(window.YT&&YT.Player))return;
+    if(!yt){yt=new YT.Player('ytp',{height:'2',width:'2',videoId:id,playerVars:{controls:0,playsinline:1,loop:1,playlist:id},events:{onReady:()=>{ytOk=true;curSrc=id;yt.setVolume(60);bgmSync()},onStateChange:e=>{if(e.data===0)yt.playVideo()}}});return}
+    if(!ytOk)return;
+    if(curSrc!==id){curSrc=id;want?yt.loadVideoById(id):yt.cueVideoById(id)}else want?yt.playVideo():yt.pauseVideo()
+  }else{if(ytOk)yt.pauseVideo();
+    if(!CFG.bgm)return;if(!au){au=new Audio();au.loop=true;au.volume=.5}
+    if(curSrc!==CFG.bgm){curSrc=CFG.bgm;au.src=CFG.bgm}
+    want?au.play().catch(()=>{}):au.pause()}}
+window.onYouTubeIframeAPIReady=bgmSync;
+if(!window.YT){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s)}
+document.addEventListener('pointerdown',()=>{ac();if(AC&&AC.state==='suspended')AC.resume();if(!gest){gest=true;bgmSync()}});
+
+/* ===== supabase: akun, leaderboard, admin ===== */
+let sb=null,user=null,dbQ=[],authTab='in',lbm=0,adT=0;
+try{if(window.supabase&&!/^ISI_/.test(SB_URL))sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function applyCfg(){CFG.time=Math.max(30,+CFG.time||300);CFG.lives=Math.min(10,Math.max(1,Math.round(+CFG.lives)||5));CFG.points=Math.max(1,+CFG.points||10);
+  ['speed','spawn'].forEach(k=>CFG[k]=Math.max(.2,+CFG[k]||1));CFG.power=Math.max(0,isNaN(+CFG.power)?1:+CFG.power);
+  $('#ttl').textContent=CFG.title;$('#ft').textContent=CFG.footer;bgmSync()}
+async function loadCfg(){if(!sb)return;try{
+  const c=await sb.from('app_settings').select('value').eq('key','config').maybeSingle();if(c.data&&c.data.value)Object.assign(CFG,c.data.value);
+  const q=await sb.from('questions').select('question,answer');if(q.data)dbQ=q.data.map(r=>[r.question,Number(r.answer)])}catch(e){}
+  applyCfg();drawMat();applySet()}
+async function setUser(session){
+  if(!session){user=null}else{const u=session.user;let name=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],role='user';
+    try{const{data}=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle();if(data){name=data.username;role=data.role}}catch(e){}
+    user={id:u.id,email:u.email,name,role}}
+  $('#acc').textContent=user?'👤 '+user.name:'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin')}
+if(sb){sb.auth.getSession().then(r=>setUser(r.data.session));sb.auth.onAuthStateChange((_e,s)=>{setTimeout(()=>setUser(s),0)})}
+function renderAuth(msg){const b=$('#authb');
+  if(!sb){b.innerHTML='<h2>👤 AKUN</h2><p class="note">Supabase belum dikonfigurasi. Isi SB_URL dan SB_KEY di bagian atas script index.html.</p><button class="cl">TUTUP</button>';return}
+  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>'+esc(user.email)+(user.role==='admin'?' • ADMIN':'')+'</small></span></div><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
+    $('#lo').onclick=async()=>{await sb.auth.signOut();$('#auth').classList.remove('on')};return}
+  const up=authTab==='up';
+  b.innerHTML='<h2>👤 AKUN</h2><div class="tabs"><button data-t="in" class="'+(up?'':'s')+'">MASUK</button><button data-t="up" class="'+(up?'s':'')+'">DAFTAR</button></div>'+(up?'<input class="in" id="au" placeholder="Username" maxlength="20">':'')+'<input class="in" id="ae" type="email" placeholder="Email"><input class="in" id="ap" type="password" placeholder="Password (min. 6 karakter)"><p class="note" id="am">'+esc(msg||'')+'</p><button class="bt" id="ago">'+(up?'DAFTAR':'MASUK')+'</button><button class="cl">TUTUP</button>';
+  b.querySelectorAll('.tabs button').forEach(x=>x.onclick=()=>{authTab=x.dataset.t;renderAuth()});
+  $('#ago').onclick=async()=>{const e=$('#ae').value.trim(),p=$('#ap').value,m=$('#am');m.textContent='Memproses...';
+    try{if(!up){const{error}=await sb.auth.signInWithPassword({email:e,password:p});if(error)throw error;$('#auth').classList.remove('on')}
+      else{const u=$('#au').value.trim();if(!/^[\w.-]{3,20}$/.test(u))throw{message:'Username 3–20 karakter (huruf, angka, titik, strip).'};
+        const c=await sb.from('profiles').select('id').eq('username',u).maybeSingle();if(c.data)throw{message:'Username sudah dipakai.'};
+        const{data,error}=await sb.auth.signUp({email:e,password:p,options:{data:{username:u}}});if(error)throw error;
+        if(data.session)$('#auth').classList.remove('on');else{authTab='in';renderAuth('Akun dibuat. Cek email untuk konfirmasi, lalu masuk.')}}
+    }catch(x){m.textContent=x.message||'Gagal.'}}}
+async function showLb(){$('#lb').classList.add('on');const t=$('#lbt');t.innerHTML='';
+  ['Semua','Sendiri','Duel','Quad'].forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.className=i===lbm?'s':'';b.onclick=()=>{lbm=i;showLb()};t.appendChild(b)});
+  const o=$('#lbl');if(!sb){o.innerHTML='<p class="note">Supabase belum dikonfigurasi.</p>';return}
+  o.innerHTML='<p class="note">Memuat...</p>';
+  let q=sb.from('scores').select('username,score,mode,level,created_at').order('score',{ascending:false}).limit(20);if(lbm)q=q.eq('mode',[0,1,2,4][lbm]);
+  const{data,error}=await q;if(error||!data){o.innerHTML='<p class="note">Gagal memuat.</p>';return}
+  o.innerHTML=data.length?'<table class="tb2"><tr><th>#</th><th>Pemain</th><th>Skor</th><th>Mode</th></tr>'+data.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.username)+'</td><td>'+r.score+'</td><td>'+({1:'Sendiri',2:'Duel',4:'Quad'}[r.mode]||r.mode)+' · '+(['Mudah','Sedang','Sulit','Extreme'][r.level]||'')+'</td></tr>').join('')+'</table>':'<p class="note">Belum ada skor.</p>'}
+async function saveScore(){const w=$('#wsave');w.textContent='';if(!sb||!L[0])return;
+  if(!user){w.textContent='Masuk ke akun untuk menyimpan skor ke leaderboard.';return}
+  if(!L[0].score)return;
+  const{error}=await sb.from('scores').insert({user_id:user.id,username:user.name,score:L[0].score,mode:mode,level:dif});
+  w.textContent=error?'Skor gagal disimpan.':'Skor P1 tersimpan ke leaderboard ✓'}
+const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number']];
+function renderAdminTabs(){const t=$('#adt');t.innerHTML='';
+  ['Game','Pengguna','Skor','Soal'].forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.className=i===adT?'s':'';b.onclick=()=>{adT=i;renderAdminTabs()};t.appendChild(b)});adminTab()}
+async function adminTab(){const b=$('#adb');
+  if(!sb||!user||user.role!=='admin'){b.innerHTML='<p class="note">Khusus admin.</p>';return}
+  b.innerHTML='<p class="note">Memuat...</p>';
+  if(adT===0){const sel=(k,arr)=>'<select class="in" data-k="'+k+'">'+arr.map((n,i)=>'<option value="'+i+'"'+(+CFG[k]===i?' selected':'')+'>'+n+'</option>').join('')+'</select>';
+    b.innerHTML=AF.map(f=>'<label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'">').join('')+'<label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'<label class="lbl2">Efek tembakan bawaan</label>'+sel('fx',FX)+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
+    $('#adsv').onclick=async()=>{b.querySelectorAll('[data-k]').forEach(x=>{const k=x.dataset.k;CFG[k]=(x.type==='number'||x.tagName==='SELECT')?Number(x.value):x.value});
+      applyCfg();applySet();const{error}=await sb.from('app_settings').upsert({key:'config',value:CFG});$('#adm0').textContent=error?'Gagal: '+error.message:'Tersimpan ✓ (berlaku untuk semua pemain)'}}
+  else if(adT===1){const{data}=await sb.from('profiles').select('id,username,role').order('username');
+    b.innerHTML=(data||[]).map(r=>'<div class="row"><span>'+esc(r.username)+'<small>'+esc(r.role)+'</small></span>'+(r.id===user.id?'':'<button class="sm" data-id="'+r.id+'" data-r="'+(r.role==='admin'?'user':'admin')+'">Jadikan '+(r.role==='admin'?'User':'Admin')+'</button>')+'</div>').join('')||'<p class="note">Belum ada pengguna.</p>';
+    b.querySelectorAll('.sm').forEach(x=>x.onclick=async()=>{await sb.from('profiles').update({role:x.dataset.r}).eq('id',x.dataset.id);adminTab()})}
+  else if(adT===2){const{data}=await sb.from('scores').select('id,username,score,mode').order('created_at',{ascending:false}).limit(30);
+    b.innerHTML='<button class="sm" id="dall" style="margin-bottom:8px;background:#be123c">Hapus SEMUA skor</button>'+((data||[]).map(r=>'<div class="row"><span>'+esc(r.username)+' — '+r.score+'<small>Mode '+r.mode+'</small></span><button class="sm" data-id="'+r.id+'">Hapus</button></div>').join('')||'<p class="note">Belum ada skor.</p>');
+    b.querySelectorAll('[data-id]').forEach(x=>x.onclick=async()=>{await sb.from('scores').delete().eq('id',x.dataset.id);adminTab()});
+    $('#dall').onclick=async()=>{if(confirm('Hapus semua skor leaderboard?')){await sb.from('scores').delete().gte('id',0);adminTab()}}}
+  else{const{data}=await sb.from('questions').select('id,question,answer').order('id',{ascending:false});
+    b.innerHTML='<input class="in" id="nq" placeholder="Pertanyaan"><input class="in" id="na" type="number" placeholder="Jawaban (angka)"><button class="bt" id="aq">TAMBAH SOAL</button><p class="note">Soal di sini muncul untuk semua pemain sebagai materi "Soal Kustom".</p>'+((data||[]).map(r=>'<div class="row"><span>'+esc(r.question)+'<small>Jawaban: '+esc(r.answer)+'</small></span><button class="sm" data-id="'+r.id+'">Hapus</button></div>').join(''));
+    $('#aq').onclick=async()=>{const q=$('#nq').value.trim(),a=$('#na').value;if(!q||a==='')return;await sb.from('questions').insert({question:q,answer:Number(a)});await loadCfg();adminTab()};
+    b.querySelectorAll('[data-id]').forEach(x=>x.onclick=async()=>{await sb.from('questions').delete().eq('id',x.dataset.id);await loadCfg();adminTab()})}}
+$('#acc').onclick=()=>{renderAuth();$('#auth').classList.add('on')};
+$('#lbb').onclick=showLb;
+$('#adm').onclick=()=>{$('#admin').classList.add('on');renderAdminTabs()};
+document.addEventListener('click',e=>{const c=e.target.closest('.cl');if(c)c.closest('.modal').classList.remove('on')});
 
 /* ===== latar bintang ===== */
 const sc=$('#stars'),sx=sc.getContext('2d');let stars=[];
@@ -251,15 +362,15 @@ const COLS=['#22d3ee','#ef4444','#22c55e','#f59e0b'],NOSE=['#dc2626','#ec4899','
 AVB=['linear-gradient(135deg,#a855f7,#38bdf8)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#22c55e,#14b8a6)','linear-gradient(135deg,#fbbf24,#f59e0b)'];
 let L=[],over=true,paused=false,tl=300,lastT=0;
 const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
-const lives=l=>{l.el.querySelector('.lives').innerHTML=Array.from({length:5},(_,k)=>'<i class="'+(k<l.lives?'':'x')+'"></i>').join('')};
+const lives=l=>{l.el.querySelector('.lives').innerHTML=Array.from({length:CFG.lives},(_,k)=>'<i class="'+(k<l.lives?'':'x')+'"></i>').join('')};
 function setWait(l,t,c){const w=l.el.querySelector('.wait');w.textContent=t;w.className='wait '+(c||'')}
 const showBuf=l=>l.buf?setWait(l,l.buf,'t'):setWait(l,'MENUNGGU...');
 function begin(){
-  const box=$('#lanes');box.innerHTML='';L=[];tl=300;over=false;paused=false;$('#pov').classList.remove('on');$('#timer').textContent='5:00';
+  const box=$('#lanes');box.innerHTML='';L=[];tl=CFG.time;over=false;paused=false;$('#pov').classList.remove('on');$('#timer').textContent=fmt(CFG.time);
   for(let i=0;i<mode;i++){
     const el=document.createElement('div');el.className='lane';el.style.setProperty('--c',COLS[i]);
-    el.innerHTML='<div class="field"><canvas></canvas><div class="badge '+(i%2?'r':'l')+'"><span>P'+(i+1)+'</span><div class="av" style="background:'+AVB[i]+'">😊</div><span class="lives"></span><b class="sc">0</b></div><div class="beku">❄ BEKU! ❄</div><div class="wait">MENUNGGU...</div></div><div class="pad"></div>';
-    const l={i,el,cv:el.querySelector('canvas'),ast:[],lz:[],pt:[],buf:'',lives:5,score:0,alive:true,fr:0,sp:2600,fl:0,
+    el.innerHTML='<div class="field"><canvas></canvas><div class="badge '+(i%2?'r':'l')+'"><span>'+(i===0&&user?esc(user.name):'P'+(i+1))+'</span><div class="av" style="background:'+AVB[i]+'">😊</div><span class="lives"></span><b class="sc">0</b></div><div class="beku">❄ BEKU! ❄</div><div class="wait">MENUNGGU...</div></div><div class="pad"></div>';
+    const l={i,el,cv:el.querySelector('canvas'),ast:[],lz:[],pt:[],buf:'',lives:CFG.lives,score:0,alive:true,fr:0,sp:2600,fl:0,
       st:Array.from({length:30},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.2+.5,v:Math.random()*.0008+.0003}))};
     l.cx=l.cv.getContext('2d');
     const pad=el.querySelector('.pad');
@@ -276,18 +387,18 @@ function shoot(l){if(!l.buf)return;const v=+l.buf;let t=null;l.ast.forEach(a=>{i
   l.lz.push({x0:l.cv.width/2,y0:l.cv.height*.62,x1:t.x,y1:t.y,l:1,c:COLS[l.i]});
   kill(l,t,true);beep(900,.15,'square',.07,300);showBuf(l)}
 function kill(l,a,pts){l.ast=l.ast.filter(x=>x!==a);
-  for(let k=0;k<18;k++){const an=Math.random()*6.28,s=Math.random()*3+1;l.pt.push({x:a.x,y:a.y,vx:Math.cos(an)*s,vy:Math.sin(an)*s,l:1})}
-  if(!pts)return;l.score+=10;l.el.querySelector('.sc').textContent=l.score;
+  for(let k=0;k<(S.light?4:18);k++){const an=Math.random()*6.28,s=Math.random()*3+1;l.pt.push({x:a.x,y:a.y,vx:Math.cos(an)*s,vy:Math.sin(an)*s,l:1})}
+  if(!pts)return;l.score+=CFG.points;l.el.querySelector('.sc').textContent=l.score;
   if(a.type==='ice'){l.fr=5000;l.el.querySelector('.beku').style.display='block'}
   if(a.type==='bom')l.ast.slice().forEach(x=>kill(l,x,true))}
 function spawn(l,w){let q,g=0;do{q=makeQ()}while(g++<6&&l.ast.some(a=>a.a===q.a));
   const t=q.q.replace(/ = \?$/,''),r=t.length>9?Math.min(w*.16,54):Math.min(Math.max(w*.075,26),38),rr=Math.random();
-  l.ast.push({t,a:q.a,r,x:r+8+Math.random()*Math.max(1,w-2*r-16),y:-r,type:rr<.08?'ice':rr<.14?'bom':'n',sd:Math.random()*10})}
+  l.ast.push({t,a:q.a,r,x:r+8+Math.random()*Math.max(1,w-2*r-16),y:-r,type:rr<.08*CFG.power?'ice':rr<.14*CFG.power?'bom':'n',sd:Math.random()*10})}
 function update(dt){tl-=dt/1000;$('#timer').textContent=fmt(Math.max(0,tl));
   L.forEach(l=>{if(!l.alive)return;const w=l.cv.width,h=l.cv.height;if(!w)return;
     if(l.fr>0){l.fr-=dt;if(l.fr<=0)l.el.querySelector('.beku').style.display='none'}
-    else{l.sp+=dt;if(l.sp>=[4200,3300,2500,1800][dif]){l.sp=0;spawn(l,w)}
-      const v=[30,42,58,80][dif]*(h/700)*dt/1000;l.ast.forEach(a=>a.y+=v)}
+    else{l.sp+=dt;if(l.sp>=[4200,3300,2500,1800][dif]*CFG.spawn){l.sp=0;spawn(l,w)}
+      const v=[30,42,58,80][dif]*CFG.speed*(h/700)*dt/1000;l.ast.forEach(a=>a.y+=v)}
     for(const a of l.ast.slice()){if(a.y+a.r>=h*.6){l.ast=l.ast.filter(x=>x!==a);
       if(a.type==='n'){l.lives--;lives(l);l.fl=300;beep(110,.3,'sawtooth',.1,40);
         if(l.lives<=0){l.alive=false;l.ast=[];l.el.classList.add('dead');setWait(l,'HABIS','bad');break}}}}});
@@ -311,12 +422,21 @@ function drawShip(cx,x,y,s,nose){cx.save();cx.translate(x,y);
   cx.fillStyle='#f8fafc';cx.fillRect(-s*.22,-s*.4,s*.44,s*1.1);
   cx.fillStyle=nose;cx.beginPath();cx.moveTo(-s*.22,-s*.4);cx.lineTo(0,-s);cx.lineTo(s*.22,-s*.4);cx.fill();
   cx.fillStyle='#2563eb';cx.fillRect(-s*.1,-s*.18,s*.2,s*.2);cx.restore()}
+function drawLaser(cx,z){const a=Math.max(0,z.l),f=fx(),dx=z.x1-z.x0,dy=z.y1-z.y0,ln=(ox)=>{cx.beginPath();cx.moveTo(z.x0+(ox||0),z.y0);cx.lineTo(z.x1+(ox||0),z.y1);cx.stroke()};
+  cx.globalAlpha=a;cx.lineCap='round';
+  if(f===0){cx.strokeStyle=z.c;cx.lineWidth=4;ln()}
+  else if(f===1){cx.shadowColor=z.c;cx.shadowBlur=18;cx.strokeStyle=z.c;cx.lineWidth=9;ln();cx.strokeStyle='#fff';cx.lineWidth=2;ln();cx.fillStyle='#fff';for(let k=0;k<5;k++){const t=(k+(1-a)*2)/5%1;cx.beginPath();cx.arc(z.x0+dx*t,z.y0+dy*t,5,0,7);cx.fill()}}
+  else if(f===2){cx.shadowColor='#60a5fa';cx.shadowBlur=12;cx.strokeStyle='#e0f2fe';cx.lineWidth=3;cx.beginPath();cx.moveTo(z.x0,z.y0);for(let k=1;k<8;k++){const t=k/8;cx.lineTo(z.x0+dx*t+(Math.random()-.5)*28,z.y0+dy*t+(Math.random()-.5)*28)}cx.lineTo(z.x1,z.y1);cx.stroke()}
+  else if(f===3){for(let k=0;k<16;k++){const t=Math.random();cx.fillStyle=k%2?'#f97316':'#fde047';cx.beginPath();cx.arc(z.x0+dx*t+(Math.random()-.5)*12,z.y0+dy*t+(Math.random()-.5)*12,3+Math.random()*4,0,7);cx.fill()}}
+  else if(f===4){const t=Math.min(1,1-a+.1),hx=z.x0+dx*t,hy=z.y0+dy*t,tt=Math.max(0,t-.35),g=cx.createLinearGradient(z.x0+dx*tt,z.y0+dy*tt,hx,hy);g.addColorStop(0,'rgba(147,197,253,0)');g.addColorStop(1,'#fff');cx.strokeStyle=g;cx.lineWidth=7;cx.beginPath();cx.moveTo(z.x0+dx*tt,z.y0+dy*tt);cx.lineTo(hx,hy);cx.stroke();cx.shadowColor='#93c5fd';cx.shadowBlur=14;cx.fillStyle='#fff';cx.beginPath();cx.arc(hx,hy,7,0,7);cx.fill()}
+  else{cx.lineWidth=3;for(let k=0;k<3;k++){cx.strokeStyle='hsl('+((performance.now()/3+k*60)%360)+',100%,60%)';ln((k-1)*6)}}
+  cx.shadowBlur=0;cx.globalAlpha=1}
 function draw(l,dt){const cv=l.cv,w=cv.clientWidth,h=cv.clientHeight;if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}
   const cx=l.cx;cx.fillStyle='#000';cx.fillRect(0,0,w,h);cx.fillStyle='#e2e8f0';cx.globalAlpha=.7;
   l.st.forEach(s=>{s.y+=s.v;if(s.y>1)s.y=0;cx.fillRect(s.x*w,s.y*h,s.r,s.r)});cx.globalAlpha=1;
   if(l.fr>0){cx.fillStyle='rgba(30,64,175,.2)';cx.fillRect(0,0,w,h)}
   l.ast.forEach(a=>drawAst(cx,a,l.fr>0));
-  l.lz.forEach(z=>{z.l-=dt/160;cx.globalAlpha=Math.max(0,z.l);cx.strokeStyle=z.c;cx.lineWidth=4;cx.beginPath();cx.moveTo(z.x0,z.y0);cx.lineTo(z.x1,z.y1);cx.stroke()});
+  l.lz.forEach(z=>{z.l-=dt/220;drawLaser(cx,z)});
   cx.globalAlpha=1;l.lz=l.lz.filter(z=>z.l>0);
   if(l.alive)drawShip(cx,w/2,h*.72,Math.min(h*.075,w*.1),NOSE[l.i]);
   for(let i=l.pt.length-1;i>=0;i--){const p=l.pt[i];p.x+=p.vx;p.y+=p.vy;p.l-=.04;if(p.l<=0){l.pt.splice(i,1);continue}cx.globalAlpha=p.l;cx.fillStyle='#fbbf24';cx.fillRect(p.x,p.y,4,4)}
@@ -325,7 +445,7 @@ function loop(t){const dt=Math.min(50,t-lastT);lastT=t;
   if($('#game').classList.contains('on')){if(!over&&!paused)update(dt);L.forEach(l=>draw(l,paused?0:dt))}
   else{sx.clearRect(0,0,sc.width,sc.height);sx.fillStyle='#f1f5f9';stars.forEach(s=>{s.y+=s.v;if(s.y>sc.height)s.y=0;sx.globalAlpha=.35+s.r/3;sx.beginPath();sx.arc(s.x,s.y,s.r,0,7);sx.fill()});sx.globalAlpha=1}
   requestAnimationFrame(loop)}
-function end(){if(over)return;over=true;setTimeout(()=>{const mx=Math.max(...L.map(l=>l.score)),wn=L.filter(l=>l.score===mx);
+function end(){if(over)return;over=true;saveScore();setTimeout(()=>{const mx=Math.max(...L.map(l=>l.score)),wn=L.filter(l=>l.score===mx);
   $('#wt').textContent=L.length===1?'Waktu Habis!':wn.length>1?'Seri!':'Pemain '+(wn[0].i+1)+' Menang!';
   $('#ws').textContent=L.map(l=>'P'+(l.i+1)+': '+l.score+' poin').join(' • ');
   $('#game').classList.remove('on');$('#win').classList.add('on')},1200)}
@@ -335,7 +455,7 @@ $('#pause').onclick=()=>{if(over)return;paused=true;$('#pov').classList.add('on'
 $('#resume').onclick=()=>{paused=false;$('#pov').classList.remove('on')};
 addEventListener('keydown',e=>{if(!$('#game').classList.contains('on')||!L[0])return;
   if(/^\d$/.test(e.key))press(L[0],e.key);else if(e.key==='Backspace')press(L[0],'HAPUS');else if(e.key==='Enter')press(L[0],'TEMBAK')});
-applySet();requestAnimationFrame(t=>{lastT=t;loop(t)});
+applyCfg();applySet();loadCfg();requestAnimationFrame(t=>{lastT=t;loop(t)});
 
 })();
 </script>
