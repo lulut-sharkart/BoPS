@@ -297,7 +297,7 @@ async function loadCfg(){if(!sb)return;try{
   applyCfg();drawMat();applySet()}
 async function setUser(session){
   if(!session){user=null}else{const u=session.user;let name=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],role='user';
-    try{const{data}=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle();if(data){name=data.username;role=data.role}}catch(e){}
+    try{let r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle();if(!r.data&&!r.error){await sb.from('profiles').insert({id:u.id,username:name});r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle()}if(r.data){name=r.data.username;role=r.data.role}else if(r.error)console.warn('Profil gagal dibaca:',r.error.message)}catch(e){}
     user={id:u.id,email:u.email,name,role}}
   $('#acc').textContent=user?'👤 '+user.name:'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin')}
 if(sb){sb.auth.getSession().then(r=>setUser(r.data.session));sb.auth.onAuthStateChange((_e,s)=>{setTimeout(()=>setUser(s),0)})}
