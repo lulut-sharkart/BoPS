@@ -34,6 +34,8 @@ h1{font-weight:900;font-size:clamp(1.5rem,5.2vw,4rem);line-height:1;background:l
 .box{background:rgba(0,0,0,.28);border:1px solid #ffffff1a;border-radius:20px;padding:1.4vh 1vw;display:flex;flex-direction:column}
 .diff{display:grid;grid-template-columns:1fr 1fr;gap:.8vw;margin-bottom:1vh;flex:1;align-content:start}
 .diff .b3.s{background:#10b981;color:#fff;box-shadow:0 4px 0 #047857}
+.diff .b3[data-d="4"]{grid-column:1/-1;background:#78350f;color:#fde68a;box-shadow:0 4px 0 #451a03}
+.diff .b3[data-d="4"].s{background:#f59e0b;color:#1c1917;box-shadow:0 4px 0 #b45309}
 .seg{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #ffffff1a;padding-top:.8vh}
 .seg button{font:inherit;font-weight:900;font-size:clamp(.6rem,1.2vw,.8rem);border:0;padding:.8vh 0;background:#111a2d;color:#64748b;cursor:pointer;min-height:36px}
 .seg button:first-child{border-radius:6px 0 0 6px}.seg button:last-child{border-radius:0 6px 6px 0}
@@ -153,7 +155,7 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
         <div class="h c2">KESULITAN</div>
         <div class="diff" id="diff">
           <button class="b3 s" data-d="0">MUDAH</button><button class="b3" data-d="1">SEDANG</button>
-          <button class="b3" data-d="2">SULIT</button><button class="b3" data-d="3">EXTREME</button>
+          <button class="b3" data-d="2">SULIT</button><button class="b3" data-d="3">EXTREME</button><button class="b3" data-d="4">GOD KING</button>
         </div>
         <div class="seg" id="seg"><button class="s" data-l="1">NORMAL</button><button data-l="2">LUAS</button></div>
       </div>
@@ -213,7 +215,7 @@ const gcd=(a,b)=>b?gcd(b,a%b):a;
 let mode=1,dif=0,luas=1,topics=['Penjumlahan'],custom=[];
 const SB_URL='https://bwweanynbkcihspmzqko.supabase.co',SB_KEY='sb_publishable_4bE87bkUZyp6jbUXOdCjLg_DfJVwrVd'; // ganti dengan milik proyek Supabase Anda
 const AUTH_DOMAIN='lulut-sharkart.github.io'; // domain untuk email internal login-username (jangan diubah setelah ada pengguna)
-const CFG={title:'BATTLE OF PRIMAL SPACE',footer:'Developer: SharkArt.evo Education',bgm:'https://youtu.be/DhD0vUDbzPw?si=W3GQMjhQKhqN_a6y',time:300,lives:5,points:10,speed:1,spawn:1,power:1,theme:0,fx:0,fxPrice:[0,300,500,700,900,1200],engineBase:150,blockPrice:200,blockStep:8,coinRate:.5,marketFee:.05,difMul:[1,1.5,2,3]};
+const CFG={title:'BATTLE OF PRIMAL SPACE',footer:'Developer: SharkArt.evo Education',bgm:'https://youtu.be/DhD0vUDbzPw?si=W3GQMjhQKhqN_a6y',time:300,lives:5,points:10,speed:1,spawn:1,power:1,theme:0,fx:0,fxPrice:[0,300,500,700,900,1200,2000],fxUpPrice:[150,200,250,300,350,400,800],engineBase:150,blockPrice:200,blockStep:8,coinRate:.5,marketFee:.05,difMul:[1,1.5,2,3,5]};
 let S={light:false,bgm:true,sfx:true,th:null,fx:null};
 let dbQ=[];
 try{Object.assign(S,JSON.parse(localStorage.getItem('bps')||'{}'))}catch(e){}
@@ -227,9 +229,9 @@ const T={
 'Pembagian':(m,k)=>{const b=R(2,k),q=R(2,k);return[b*q+' ÷ '+b+' = ?',q]},
 'Campur (Basic)':(m,k)=>T[P(['Penjumlahan','Pengurangan','Perkalian','Pembagian'])](m,k),
 'Pangkat 2':(m,k)=>{const n=R(2,Math.min(k+2,25));return[n+'² = ?',n*n]},
-'Pangkat 3':()=>{const n=R(2,[4,6,8,10][dif]+(luas>1?2:0));return[n+'³ = ?',n**3]},
+'Pangkat 3':()=>{const n=R(2,[4,6,8,10,12][dif]+(luas>1?2:0));return[n+'³ = ?',n**3]},
 'Akar Pangkat 2':(m,k)=>{const n=R(2,k+3);return['√'+n*n+' = ?',n]},
-'Akar Pangkat 3':()=>{const n=R(2,[4,6,8,10][dif]);return['∛'+n**3+' = ?',n]},
+'Akar Pangkat 3':()=>{const n=R(2,[4,6,8,10,12][dif]);return['∛'+n**3+' = ?',n]},
 'Campur (Advanced)':(m,k)=>{if(Math.random()<.3){const a=R(2,m),b=R(2,9),c=R(2,9);return[a+' + '+b+' × '+c+' = ?',a+b*c]}return T[P(['Pangkat 2','Pangkat 3','Akar Pangkat 2','Akar Pangkat 3'])](m,k)},
 '2 Digit':()=>{const a=R(10,99),b=R(10,99);return[a+' + '+b+' = ?',a+b]},
 '-2 Digit':()=>{const a=R(20,99),b=R(10,a);return[a+' − '+b+' = ?',a-b]},
@@ -240,12 +242,12 @@ const T={
 'KPK':()=>{const a=R(2,12),b=R(2,12);return['KPK dari '+a+' dan '+b+' = ?',a*b/gcd(a,b)]},
 'Satuan Waktu':()=>{const h=R(1,9),m=R(2,9);return P([[h+' jam = … menit',h*60],[m+' menit = … detik',m*60],[h*60+' menit = … jam',h],[h+' hari = … jam',h*24]])},
 'Jarak & Kecepatan':()=>{const v=R(2,12)*10,t=R(2,6);return P([['Kecepatan '+v+' km/jam, waktu '+t+' jam. Jarak = … km',v*t],['Jarak '+v*t+' km ditempuh '+t+' jam. Kecepatan = … km/jam',v]])},
-'Hitung Bintang':()=>{const n=R(2,[6,10,15,20][dif]);return['⭐'.repeat(n),n]}
+'Hitung Bintang':()=>{const n=R(2,[6,10,15,20,25][dif]);return['⭐'.repeat(n),n]}
 };
 function makeQ(){
   const pool=topics.slice();let name=P(pool),q,a;
   if(name==='Soal Kustom'){[q,a]=P(custom.concat(dbQ))}
-  else{const m=[10,20,50,100][dif]*luas,k=Math.min([5,10,12,20][dif]*(luas>1?1.5:1)|0,30);[q,a]=T[name](m,k)}
+  else{const m=[10,20,50,100,200][dif]*luas,k=Math.min([5,10,12,20,25][dif]*(luas>1?1.5:1)|0,30);[q,a]=T[name](m,k)}
   const o=new Set([a]);let sp=Math.max(3,Math.round(Math.abs(a)*.2)),g=0;
   while(o.size<4&&g++<80){const d=a+R(-sp,sp);if(d>=0&&d!==a)o.add(d)}
   while(o.size<4)o.add(a+o.size);
@@ -263,7 +265,8 @@ grp('#modes','n',v=>mode=v);grp('#diff','d',v=>dif=v);grp('#seg','l',v=>luas=v);
 
 /* ===== pengaturan ===== */
 const TH=[['Original',''],['Nebula Biru','hue-rotate(-35deg) saturate(1.2)'],['Toxic Green','hue-rotate(-110deg) saturate(1.3)'],['Red Nova','hue-rotate(110deg) saturate(1.2)'],['Deep Purple','hue-rotate(25deg) saturate(1.4) brightness(.9)'],['Monochrome','grayscale(1)']];
-const FX=['Laser','Plasma','Petir','Api','Komet','Pelangi'];
+const FX=['Laser','Plasma','Petir','Api','Komet','Pelangi','Milky Way Destroy'],
+FXD=['Tembakan standar. Tiap level: bonus poin +10%.','Tiap 3 tembakan benar muncul perisai plasma: asteroid yang menyentuhnya meledak. Durasi 5 dtk (+1 dtk per level).','Menyambar 3 asteroid sekaligus: saat 1 jawaban benar, 2 asteroid lain ikut meledak (+1 per level).','Tembakan memicu ledakan api yang menghancurkan asteroid di sekitar target (radius naik per level).','Tiap beberapa tembakan benar, semua soal di layar menjadi sama, sehingga 1 jawaban meledakkan semuanya (makin cepat per level).','Peluang meledakkan 1 asteroid tambahan: +10% per level.','Meledakkan 5 asteroid sekaligus dalam 1 tembakan (+1 asteroid per level).'];
 const thN=()=>S.th==null?+CFG.theme||0:S.th,fx=()=>S.light?0:((user&&user.fxEq)||0);
 function applySet(){['light','bgm','sfx'].forEach(k=>$('#s-'+k).classList.toggle('on',S[k]));
   $('#app').style.filter=TH[thN()][1];
@@ -301,14 +304,15 @@ if(!window.YT){const s=document.createElement('script');s.src='https://www.youtu
 document.addEventListener('pointerdown',()=>{ac();if(AC&&AC.state==='suspended')AC.resume();if(!gest){gest=true;bgmSync()}});
 
 /* ===== supabase: akun, leaderboard, admin ===== */
-let sb=null,user=null,authTab='in',lbm=0,lbL=-1,adT=0,garT=0,shopT=0;
+let lastNotice='',sb=null,user=null,authTab='in',lbm=0,lbL=-1,adT=0,garT=0,shopT=0;
 try{if(window.supabase&&!/^ISI_/.test(SB_URL))sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){}
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function applyCfg(){CFG.time=Math.max(30,+CFG.time||300);CFG.lives=Math.min(10,Math.max(1,Math.round(+CFG.lives)||5));CFG.points=Math.max(1,+CFG.points||10);
   ['speed','spawn'].forEach(k=>CFG[k]=Math.max(.2,+CFG[k]||1));CFG.power=Math.max(0,isNaN(+CFG.power)?1:+CFG.power);
-  if(!Array.isArray(CFG.fxPrice))CFG.fxPrice=String(CFG.fxPrice).split(',');CFG.fxPrice=[0,1,2,3,4,5].map(i=>Math.max(0,Math.round(+CFG.fxPrice[i])||0));CFG.fxPrice[0]=0;
-  if(!Array.isArray(CFG.difMul))CFG.difMul=String(CFG.difMul).split(',');CFG.difMul=[0,1,2,3].map(i=>{const v=parseFloat(CFG.difMul[i]);return v>0?Math.min(v,10):[1,1.5,2,3][i]});
-  $$('#diff button').forEach((b,i)=>{const n=['MUDAH','SEDANG','SULIT','EXTREME'][i],m=CFG.difMul[i];b.textContent=n+(m!==1?' ×'+m:'')});
+  if(!Array.isArray(CFG.fxPrice))CFG.fxPrice=String(CFG.fxPrice).split(',');const FPD=[0,300,500,700,900,1200,2000],FUD=[150,200,250,300,350,400,800];CFG.fxPrice=FPD.map((d,i)=>{const v=parseFloat(CFG.fxPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});CFG.fxPrice[0]=0;
+  if(!Array.isArray(CFG.fxUpPrice))CFG.fxUpPrice=String(CFG.fxUpPrice).split(',');CFG.fxUpPrice=FUD.map((d,i)=>{const v=parseFloat(CFG.fxUpPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});
+  if(!Array.isArray(CFG.difMul))CFG.difMul=String(CFG.difMul).split(',');CFG.difMul=[0,1,2,3,4].map(i=>{const v=parseFloat(CFG.difMul[i]);return v>0?Math.min(v,10):[1,1.5,2,3,5][i]});
+  $$('#diff button').forEach((b,i)=>{const n=['MUDAH','SEDANG','SULIT','EXTREME','GOD KING'][i],m=CFG.difMul[i];b.textContent=n+(m!==1?' ×'+m:'')});
   const D={coinPerHit:1,coinRate:.5,marketFee:.05,engineBase:150,blockPrice:200,blockStep:8};for(const k in D)CFG[k]=isNaN(parseFloat(CFG[k]))?D[k]:+CFG[k];CFG.blockStep=Math.max(1,Math.round(CFG.blockStep));
   $('#ttl').textContent=CFG.title;$('#ft').textContent=CFG.footer;bgmSync()}
 async function loadCfg(){if(!sb)return;try{
@@ -319,13 +323,13 @@ const ROLE={user:'Pemain',guru:'Guru',admin:'Admin'};
 const canMulti=()=>!!(user&&(user.role==='guru'||user.role==='admin'));
 function updateModes(){if(mode>1&&!canMulti())mode=1;$$('#modes button').forEach(b=>{const n=+b.dataset.n,lock=n>1&&!canMulti();b.disabled=lock;b.style.opacity=lock?.5:1;b.classList.toggle('s',n===mode);const k=b.querySelector('.lk');if(k)k.style.display=lock?'block':'none'})}
 async function rpc(fn,args){const{data,error}=await sb.rpc(fn,args||{});if(error){alert(error.message);return null}return data==null?true:data}
-const PSEL='username,nickname,role,coins,max_blocks,equipped_ship,equipped_fx,owned_fx';
+const PSEL='username,nickname,role,coins,max_blocks,equipped_ship,equipped_fx,owned_fx,fx_lv,notice';
 async function setUser(session){
-  if(!session){user=null}else{const u=session.user;let nm=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],dbg='',pr=null;
+  if(!session){user=null}else{const u=session.user;try{await sb.rpc('expire_listings')}catch(e){}let nm=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],dbg='',pr=null;
     try{let r=await sb.from('profiles').select(PSEL).eq('id',u.id).maybeSingle();
       if(!r.data&&!r.error){const e=await sb.rpc('ensure_profile',{p_username:nm});if(e.error)dbg='gagal membuat profil: '+e.error.message;r=await sb.from('profiles').select(PSEL).eq('id',u.id).maybeSingle()}
       pr=r.data;if(!pr)dbg=dbg||(r.error&&r.error.message)||'baris profil tidak ada'}catch(e){dbg=String(e&&e.message||e)}
-    user={id:u.id,email:u.email,username:pr?pr.username:nm,nick:(pr&&pr.nickname)||'',name:(pr&&(pr.nickname||pr.username))||nm,role:pr?pr.role:'user',coins:pr?pr.coins:0,maxBlocks:pr?pr.max_blocks:24,eqShip:pr?pr.equipped_ship:null,fxEq:pr?pr.equipped_fx:0,fxOwned:pr?pr.owned_fx:[0],dbg,ship:null};
+    user={id:u.id,email:u.email,username:pr?pr.username:nm,nick:(pr&&pr.nickname)||'',name:(pr&&(pr.nickname||pr.username))||nm,role:pr?pr.role:'user',coins:pr?pr.coins:0,maxBlocks:pr?pr.max_blocks:24,eqShip:pr?pr.equipped_ship:null,fxEq:pr?pr.equipped_fx:0,fxOwned:pr?pr.owned_fx:[0],fxLv:(pr&&pr.fx_lv)||{},dbg,ship:null};if(pr&&pr.notice&&pr.notice!==lastNotice){lastNotice=pr.notice;const nt=pr.notice;sb.rpc('clear_notice').then(()=>{});setTimeout(()=>alert(nt),400)}
     if(user.eqShip){try{const s=await sb.from('ship_inventory').select('engine_lv,design:ship_designs(blocks)').eq('id',user.eqShip).maybeSingle();if(s.data&&s.data.design)user.ship={blocks:s.data.design.blocks,eng:s.data.engine_lv}}catch(e){}}}
   $('#acc').textContent=user?'👤 '+user.name+' · 🪙'+user.coins:'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin');updateModes()}
 async function refreshMe(){if(!sb)return;const r=await sb.auth.getSession();await setUser(r.data.session)}
@@ -335,7 +339,7 @@ async function loadStats(){const o=$('#stt');if(!o||!user)return;
   const{data,error}=await sb.from('scores').select('score,mode,level,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(500);
   if(error){o.innerHTML='<p class="note">Statistik gagal dimuat: '+esc(error.message)+'</p>';return}
   if(!data.length){o.innerHTML='<p class="note">Belum ada permainan tersimpan. Mainkan satu ronde untuk melihat statistikmu!</p>';return}
-  const n=data.length,tot=data.reduce((a,r)=>a+r.score,0),best=Math.max(...data.map(r=>r.score)),MN={1:'Sendiri',2:'Duel',4:'Quad'},LV=['Mudah','Sedang','Sulit','Extreme'];
+  const n=data.length,tot=data.reduce((a,r)=>a+r.score,0),best=Math.max(...data.map(r=>r.score)),MN={1:'Sendiri',2:'Duel',4:'Quad'},LV=['Mudah','Sedang','Sulit','Extreme','God King'];
   const card=(k,v)=>'<div class="sc2"><b>'+v+'</b><span>'+k+'</span></div>';
   const per=[1,2,4].map(m=>{const r=data.filter(x=>x.mode===m);return r.length?'<tr><td>'+MN[m]+'</td><td>'+r.length+'</td><td>'+Math.max(...r.map(x=>x.score))+'</td><td>'+Math.round(r.reduce((a,x)=>a+x.score,0)/r.length)+'</td></tr>':''}).join('');
   const rc=data.slice(0,5).map(r=>'<tr><td>'+new Date(r.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</td><td>'+(MN[r.mode]||r.mode)+' · '+(LV[r.level]||'')+'</td><td>'+r.score+'</td></tr>').join('');
@@ -366,13 +370,13 @@ function renderAuth(msg){const b=$('#authb');
     }catch(x){m.textContent=x.message||'Gagal.'}}}
 async function showLb(){$('#lb').classList.add('on');
   mkTabs($('#lbt'),['Semua mode','Sendiri','Duel','Quad'],lbm,i=>{lbm=i;showLb()});
-  mkTabs($('#lbt2'),['Semua level','Mudah','Sedang','Sulit','Extreme'],lbL+1,i=>{lbL=i-1;showLb()});
+  mkTabs($('#lbt2'),['Semua level','Mudah','Sedang','Sulit','Extreme','God King'],lbL+1,i=>{lbL=i-1;showLb()});
   const o=$('#lbl');if(!sb){o.innerHTML='<p class="note">Supabase belum dikonfigurasi.</p>';return}
   o.innerHTML='<p class="note">Memuat...</p>';
   let q=sb.from('scores').select('username,score,mode,level,created_at').order('score',{ascending:false}).limit(20);
   if(lbm)q=q.eq('mode',[0,1,2,4][lbm]);if(lbL>=0)q=q.eq('level',lbL);
   const{data,error}=await q;if(error||!data){o.innerHTML='<p class="note">Gagal memuat.</p>';return}
-  o.innerHTML=data.length?'<table class="tb2"><tr><th>#</th><th>Pemain</th><th>Skor</th><th>Mode · Level</th></tr>'+data.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.username)+'</td><td>'+r.score+'</td><td>'+({1:'Sendiri',2:'Duel',4:'Quad'}[r.mode]||r.mode)+' · '+(['Mudah','Sedang','Sulit','Extreme'][r.level]||'')+'</td></tr>').join('')+'</table>':'<p class="note">Belum ada skor untuk filter ini.</p>'}
+  o.innerHTML=data.length?'<table class="tb2"><tr><th>#</th><th>Pemain</th><th>Skor</th><th>Mode · Level</th></tr>'+data.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.username)+'</td><td>'+r.score+'</td><td>'+({1:'Sendiri',2:'Duel',4:'Quad'}[r.mode]||r.mode)+' · '+(['Mudah','Sedang','Sulit','Extreme','God King'][r.level]||'')+'</td></tr>').join('')+'</table>':'<p class="note">Belum ada skor untuk filter ini.</p>'}
 async function saveScore(){const w=$('#wsave');w.textContent='';if(!sb||!L[0])return;
   if(!user){w.textContent='Masuk ke akun untuk menyimpan skor dan mendapat koin.';return}
   const r=await sb.rpc('submit_score',{p_score:L[0].score,p_mode:mode,p_level:dif,p_hits:L[0].hits||0});
@@ -400,31 +404,34 @@ function renderEditor(el,o){const st={c:{},col:1,sym:true};
   el.querySelector('.eclr').onclick=()=>{st.c={};draw()};
   el.querySelector('.esv').onclick=()=>{const bl=Object.entries(st.c).map(([k,c])=>{const a=k.split(',');return[+a[0],+a[1],c]});o.onSave(el.querySelector('.enm').value.trim(),bl)};
   draw()}
-async function renderGar(){mkTabs($('#gart'),['Pesawat','Tembakan','Buat Pesawat','Blok'],garT,i=>{garT=i;renderGar()});
+async function renderGar(){try{await sb.rpc('expire_listings')}catch(e){}mkTabs($('#gart'),['Pesawat','Tembakan','Buat Pesawat','Blok'],garT,i=>{garT=i;renderGar()});
   const o=$('#garb');o.innerHTML=coinTxt()+'<p class="note">Memuat...</p>';
-  if(garT===0){const{data,error}=await sb.from('ship_inventory').select('id,design_id,engine_lv,listed_price,design:ship_designs(name,blocks)').eq('owner_id',user.id).order('id');
+  if(garT===0){const{data,error}=await sb.from('ship_inventory').select('id,design_id,engine_lv,listed_price,listed_at,design:ship_designs(name,blocks)').eq('owner_id',user.id).order('id');
     if(error){o.innerHTML='<p class="note">Gagal memuat: '+esc(error.message)+'</p>';return}
+    let qm={};try{const qq=await sb.rpc('my_quotes');(qq.data||[]).forEach(x=>qm[x.inv_id]=x.val)}catch(e){}
+    const qinfo=r=>{if(!r.listed_price)return '';const dl=r.listed_at?Math.max(0,30-Math.floor((Date.now()-new Date(r.listed_at))/864e5)):30;return ' • Taksiran makelar 🪙'+(qm[r.id]||'?')+' • sisa '+dl+' hari'};
     o.innerHTML=coinTxt()+data.map(r=>{const cost=Math.round(CFG.engineBase*(r.engine_lv+1)),eq=user.eqShip===r.id;
-      return '<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.design.name)+'<small>Mesin Lv '+r.engine_lv+'/5'+(r.listed_price?' • DIJUAL 🪙'+r.listed_price:'')+'</small></div><div class="acts">'
+      return '<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.design.name)+'<small>Mesin Lv '+r.engine_lv+'/5'+(r.listed_price?' • DIJUAL 🪙'+r.listed_price+qinfo(r):'')+'</small></div><div class="acts">'
         +(eq?'<button class="sm" disabled>✓ DIPAKAI</button>':r.listed_price?'':'<button class="sm" data-a="eq" data-id="'+r.id+'">PAKAI</button>')
         +(r.engine_lv<5?'<button class="sm" data-a="up" data-id="'+r.id+'">⬆ Mesin 🪙'+cost+'</button>':'')
-        +(r.design_id===1?'':r.listed_price?'<button class="sm" data-a="unl" data-id="'+r.id+'">Batal jual</button>':'<button class="sm" data-a="sell" data-id="'+r.id+'">Jual</button>')+'</div></div>'}).join('');
+        +(r.design_id===1?'':r.listed_price?'<button class="sm" data-a="unl" data-id="'+r.id+'">Batal jual</button>':'<button class="sm" data-a="sell" data-id="'+r.id+'">Jual</button>')+(r.design_id===1?'':'<button class="sm" data-a="des" data-id="'+r.id+'" style="background:#7f1d1d">Hancurkan</button>')+'</div></div>'}).join('');
     data.forEach(r=>drawPrev(o.querySelector('[data-b="'+r.id+'"]'),r.design.blocks,r.engine_lv));
     o.querySelectorAll('[data-a]').forEach(x=>x.onclick=async()=>{const id=+x.dataset.id,a=x.dataset.a;let ok;
       if(a==='eq')ok=await rpc('equip_ship',{p_inv:id});
       else if(a==='up')ok=await rpc('upgrade_engine',{p_inv:id});
-      else if(a==='sell'){const p=parseInt(prompt('Harga jual pesawat (koin):'),10);if(!p||p<1)return;ok=await rpc('list_ship',{p_inv:id,p_price:p})}
+      else if(a==='sell'){const p=parseInt(prompt('Harga jual pesawat (koin).\nJika tidak terjual dalam 30 hari, pesawat dihancurkan makelar dan kamu menerima koin sesuai taksiran makelar.'),10);if(!p||p<1)return;ok=await rpc('list_ship',{p_inv:id,p_price:p})}
+      else if(a==='des'){if(!confirm('Hancurkan pesawat ini? Tidak ada koin yang kembali dan tidak bisa dibatalkan.'))return;ok=await rpc('destroy_ship',{p_inv:id})}
       else ok=await rpc('list_ship',{p_inv:id,p_price:null});
       if(ok){await refreshMe();renderGar()}})}
-  else if(garT===1){o.innerHTML=coinTxt()+FX.map((n,i)=>{const own=user.fxOwned.includes(i),eq=user.fxEq===i,pr=(CFG.fxPrice&&CFG.fxPrice[i])||0;
-      return '<div class="it"><div class="inf">'+n+'<small>'+(own?'Dimiliki':'Eksklusif • 🪙'+pr)+'</small></div><div class="acts">'+(eq?'<button class="sm" disabled>✓ DIPAKAI</button>':own?'<button class="sm" data-a="fxe" data-i="'+i+'">PAKAI</button>':'<button class="sm" data-a="fxb" data-i="'+i+'">BELI</button>')+'</div></div>'}).join('')+'<p class="note">Jenis tembakan dipakai oleh pesawat P1 (akunmu). Mode Ringan memakai Laser biasa.</p>';
-    o.querySelectorAll('[data-a]').forEach(x=>x.onclick=async()=>{const i=+x.dataset.i,ok=await rpc(x.dataset.a==='fxb'?'buy_fx':'equip_fx',{p_i:i});if(ok){await refreshMe();renderGar()}})}
-  else if(garT===2){o.innerHTML=coinTxt()+'<p class="note">Susun pesawatmu dari blok. Batas blokmu: <b>'+user.maxBlocks+'</b>. Ketuk kotak untuk menaruh/menghapus blok.</p><div id="edc"></div>';
+  else if(garT===1){o.innerHTML=coinTxt()+FX.map((n,i)=>{const own=user.fxOwned.includes(i),eq=user.fxEq===i,pr=(CFG.fxPrice&&CFG.fxPrice[i])||0,lv=fxLv(i),up=Math.round(((CFG.fxUpPrice&&CFG.fxUpPrice[i])||0)*lv);
+      return '<div class="it"><div class="inf">'+n+(own?' • Lv '+lv+'/5':'')+'<small>'+FXD[i]+'<br>'+(own?'Dimiliki':'Eksklusif • 🪙'+pr)+'</small></div><div class="acts">'+(own?(eq?'<button class="sm" disabled>✓ DIPAKAI</button>':'<button class="sm" data-a="fxe" data-i="'+i+'">PAKAI</button>')+(lv<5?'<button class="sm" data-a="fxu" data-i="'+i+'">⬆ Lv '+(lv+1)+' 🪙'+up+'</button>':'<button class="sm" disabled>MAX</button>'):'<button class="sm" data-a="fxb" data-i="'+i+'">BELI</button>')+'</div></div>'}).join('')+'<p class="note">Efek khusus dipakai oleh pesawat P1 (akunmu). Mode Ringan memakai Laser biasa tanpa efek.</p>';
+    o.querySelectorAll('[data-a]').forEach(x=>x.onclick=async()=>{const i=+x.dataset.i,a=x.dataset.a,ok=await rpc(a==='fxb'?'buy_fx':a==='fxu'?'upgrade_fx':'equip_fx',{p_i:i});if(ok){await refreshMe();renderGar()}})}
+  else if(garT===2){o.innerHTML=coinTxt()+'<p class="note">Susun pesawatmu dari blok. Batas blokmu: <b>'+user.maxBlocks+'</b>. Ketuk kotak untuk menaruh/menghapus blok. Kamu hanya boleh punya <b>1 pesawat custom</b>; hancurkan atau jual yang lama untuk membuat baru.</p><div id="edc"></div>';
     renderEditor($('#edc'),{max:user.maxBlocks,label:'SIMPAN PESAWAT',onSave:async(n,bl)=>{if(!n){alert('Isi nama pesawat.');return}const r=await rpc('create_ship',{p_name:n,p_blocks:bl});if(r){alert('Pesawat dibuat! Lihat di tab Pesawat.');garT=0;renderGar()}}})}
   else{const step=CFG.blockStep,price=Math.round(CFG.blockPrice*(1+Math.floor((user.maxBlocks-24)/step)));
     o.innerHTML=coinTxt()+'<div class="it"><div class="inf">Batas blok: '+user.maxBlocks+' / 81<small>'+(user.maxBlocks>=81?'Sudah maksimal':'Tambah +'+step+' blok = 🪙'+price)+'</small></div><div class="acts">'+(user.maxBlocks>=81?'':'<button class="sm" id="bb">BELI BLOK</button>')+'</div></div>';
     const bb=$('#bb');if(bb)bb.onclick=async()=>{if(await rpc('buy_blocks')){await refreshMe();renderGar()}}}}
-async function renderShop(){mkTabs($('#shopt'),['Toko Resmi','Pasar Pemain'],shopT,i=>{shopT=i;renderShop()});
+async function renderShop(){try{await sb.rpc('expire_listings')}catch(e){}mkTabs($('#shopt'),['Toko Resmi','Pasar Pemain'],shopT,i=>{shopT=i;renderShop()});
   const o=$('#shopb');o.innerHTML=coinTxt()+'<p class="note">Memuat...</p>';
   if(shopT===0){const{data,error}=await sb.from('ship_designs').select('id,name,blocks,price').eq('is_catalog',true).eq('active',true).order('price');
     if(error){o.innerHTML='<p class="note">Gagal memuat: '+esc(error.message)+'</p>';return}
@@ -438,7 +445,7 @@ async function renderShop(){mkTabs($('#shopt'),['Toko Resmi','Pasar Pemain'],sho
     data.forEach(r=>drawPrev(o.querySelector('[data-b="'+r.id+'"]'),r.design.blocks,r.engine_lv));
     o.querySelectorAll('[data-id]').forEach(x=>x.onclick=async()=>{if(await rpc('buy_ship',{p_inv:+x.dataset.id})){await refreshMe();alert('Berhasil dibeli! Pesawat ada di Space Garage.');renderShop()}})}}
 const needLogin=()=>{if(!sb||!user){alert('Masuk dulu ke akunmu untuk membuka fitur ini.');return true}return false};
-const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number'],['coinPerHit','Koin per tembakan benar (bawaan 1)','number'],['marketFee','Potongan pasar pemain (0–1, mis. 0.05 = 5%)','number'],['engineBase','Harga dasar upgrade mesin','number'],['blockPrice','Harga dasar tambah blok','number'],['blockStep','Jumlah blok per pembelian','number'],['difMul','Pengali skor per kesulitan (4 angka dipisah koma: Mudah,Sedang,Sulit,Extreme)','text'],['fxPrice','Harga tembakan (6 angka dipisah koma: Laser,Plasma,Petir,Api,Komet,Pelangi)','text']];
+const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number'],['coinPerHit','Koin per tembakan benar (bawaan 1)','number'],['marketFee','Potongan pasar pemain (0–1, mis. 0.05 = 5%)','number'],['engineBase','Harga dasar upgrade mesin','number'],['blockPrice','Harga dasar tambah blok','number'],['blockStep','Jumlah blok per pembelian','number'],['difMul','Pengali skor & koin per kesulitan (5 angka dipisah koma: Mudah,Sedang,Sulit,Extreme,God King)','text'],['fxPrice','Harga tembakan (7 angka dipisah koma: Laser,Plasma,Petir,Api,Komet,Pelangi,Milky Way Destroy)','text'],['fxUpPrice','Harga dasar upgrade tembakan per efek (7 angka; biaya = angka x level saat ini)','text']];
 function renderAdminTabs(){const t=$('#adt');t.innerHTML='';
   ['Game','Pengguna','Skor','Soal','Toko'].forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.className=i===adT?'s':'';b.onclick=()=>{adT=i;renderAdminTabs()};t.appendChild(b)});adminTab()}
 async function adminTab(){const b=$('#adb');
@@ -447,7 +454,7 @@ async function adminTab(){const b=$('#adb');
   if(adT===0){const sel=(k,arr)=>'<select class="in" data-k="'+k+'">'+arr.map((n,i)=>'<option value="'+i+'"'+(+CFG[k]===i?' selected':'')+'>'+n+'</option>').join('')+'</select>';
     b.innerHTML=AF.map(f=>'<label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'">').join('')+'<label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
     $('#adsv').onclick=async()=>{b.querySelectorAll('[data-k]').forEach(x=>{const k=x.dataset.k;CFG[k]=(x.type==='number'||x.tagName==='SELECT')?Number(x.value):x.value});
-      CFG.fxPrice=String(CFG.fxPrice).split(',').map(n=>Math.max(0,+n||0));CFG.difMul=String(CFG.difMul).split(',').map(Number);applyCfg();applySet();const{error}=await sb.from('app_settings').upsert({key:'config',value:CFG});$('#adm0').textContent=error?'Gagal: '+error.message:'Tersimpan ✓ (berlaku untuk semua pemain)'}}
+      CFG.fxPrice=String(CFG.fxPrice).split(',').map(n=>Math.max(0,+n||0));CFG.fxUpPrice=String(CFG.fxUpPrice).split(',').map(n=>Math.max(0,+n||0));CFG.difMul=String(CFG.difMul).split(',').map(Number);applyCfg();applySet();const{error}=await sb.from('app_settings').upsert({key:'config',value:CFG});$('#adm0').textContent=error?'Gagal: '+error.message:'Tersimpan ✓ (berlaku untuk semua pemain)'}}
   else if(adT===1){const{data}=await sb.from('profiles').select('id,username,nickname,role,coins').order('username');
     b.innerHTML='<p class="note">Atur peran: <b>user</b> = pemain biasa, <b>guru</b> = boleh mode Duel & Quad, <b>admin</b> = semua akses.</p>'+((data||[]).map(r=>'<div class="row" style="flex-wrap:wrap;gap:6px"><span>'+esc(r.nickname||r.username)+'<small>@'+esc(r.username)+'</small></span><span style="display:flex;gap:4px;align-items:center"><select class="in" style="width:auto;margin:0" data-u="'+r.id+'" data-f="role">'+['user','guru','admin'].map(o=>'<option'+(o===r.role?' selected':'')+'>'+o+'</option>').join('')+'</select><input class="in" style="width:80px;margin:0" type="number" data-u="'+r.id+'" data-f="coins" value="'+r.coins+'"><button class="sm" data-save="'+r.id+'">Simpan</button></span></div>').join('')||'<p class="note">Belum ada pengguna.</p>');
     b.querySelectorAll('[data-save]').forEach(x=>x.onclick=async()=>{const id=x.dataset.save,role=b.querySelector('[data-u="'+id+'"][data-f="role"]').value,coins=Math.round(+b.querySelector('[data-u="'+id+'"][data-f="coins"]').value)||0;const{error}=await sb.from('profiles').update({role,coins}).eq('id',id);x.textContent=error?'Gagal':'✓';if(!error&&id===user.id)refreshMe()})}
@@ -491,7 +498,7 @@ function begin(){
   for(let i=0;i<mode;i++){
     const el=document.createElement('div');el.className='lane';el.style.setProperty('--c',COLS[i]);
     el.innerHTML='<div class="field"><canvas></canvas><div class="badge '+(i%2?'r':'l')+'"><span>'+(i===0&&user?esc(user.name):'P'+(i+1))+'</span><div class="av" style="background:'+AVB[i]+'">😊</div><span class="lives"></span><b class="sc">0</b></div><div class="beku">❄ BEKU! ❄</div><div class="wait">MENUNGGU...</div></div><div class="pad"></div>';
-    const l={i,el,cv:el.querySelector('canvas'),ast:[],lz:[],pt:[],buf:'',lives:CFG.lives,score:0,alive:true,fr:0,sp:2600,fl:0,ship:i===0&&user?user.ship:null,
+    const l={i,el,cv:el.querySelector('canvas'),ast:[],lz:[],pt:[],buf:'',lives:CFG.lives,score:0,hits:0,sh:0,ex:[],alive:true,fr:0,sp:2600,fl:0,ship:i===0&&user?user.ship:null,
       st:Array.from({length:30},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.2+.5,v:Math.random()*.0008+.0003}))};
     l.cx=l.cv.getContext('2d');
     const pad=el.querySelector('.pad');
@@ -503,10 +510,23 @@ function press(l,k){if(over||paused||!l.alive)return;
   beep(520,.04,'square',.04);
   if(k==='HAPUS')l.buf=l.buf.slice(0,-1);else if(l.buf.length<4)l.buf+=k;
   showBuf(l)}
+const fxLv=i=>Math.min(5,Math.max(1,(user&&user.fxLv&&+user.fxLv[i])||1));
+const addSc=(l,n)=>{l.score+=n;l.el.querySelector('.sc').textContent=l.score};
+function boom(l,x,y,R,c){l.ex.push({x,y,R,c,l:1});for(let k=0;k<(S.light?6:26);k++){const an=Math.random()*6.28,s=Math.random()*4+1;l.pt.push({x,y,vx:Math.cos(an)*s,vy:Math.sin(an)*s,l:1,c})}}
+function special(l,t){const f=fx(),lv=fxLv(f),h=l.cv.height,byY=()=>l.ast.slice().sort((a,b)=>b.y-a.y),kl=a=>{if(l.ast.includes(a))kill(l,a,true)},
+  zap=(a,c,ff)=>{if(!l.ast.includes(a))return;l.lz.push({x0:t.x,y0:t.y,x1:a.x,y1:a.y,l:1,c,f:ff});kill(l,a,true)};
+  if(f===0){if(lv>1)addSc(l,Math.round(CFG.points*(CFG.difMul[dif]||1)*.1*(lv-1)))}
+  else if(f===1){l.pc=(l.pc||0)+1;if(l.pc>=3&&!(l.sh>0)){l.pc=0;l.sh=(4+lv)*1000;beep(300,.4,'sine',.08,900)}}
+  else if(f===2){byY().filter(a=>a!==t).slice(0,1+lv).forEach(a=>zap(a,'#e0f2fe',2))}
+  else if(f===3){const R=(80+20*lv)*(h/700);boom(l,t.x,t.y,R,'#f97316');l.ast.filter(a=>Math.hypot(a.x-t.x,a.y-t.y)<=R+a.r).forEach(kl)}
+  else if(f===4){l.ast.filter(a=>a.a===t.a&&a.type==='n').forEach(a=>zap(a,'#93c5fd',1));
+    l.cc=(l.cc||0)+1;if(l.cc>=Math.max(2,5-lv)){l.cc=0;const s=byY().find(a=>a.type==='n');if(s){boom(l,s.x,s.y,50*(h/700),'#93c5fd');l.ast.forEach(a=>{if(a.type==='n'){a.t=s.t;a.a=s.a}})}}}
+  else if(f===5){if(l.ast.length&&Math.random()<.1*(lv-1))zap(P(l.ast),'#f0abfc',5)}
+  else if(f===6){boom(l,t.x,t.y,70*(h/700),'#c084fc');byY().filter(a=>a!==t).slice(0,3+lv).forEach(a=>zap(a,'#c084fc',6))}}
 function shoot(l){if(!l.buf)return;const v=+l.buf;let t=null;l.ast.forEach(a=>{if(a.a===v&&(!t||a.y>t.y))t=a});l.buf='';
   if(!t){setWait(l,'SALAH!','bad');beep(150,.3,'sawtooth',.08);setTimeout(()=>{if(!l.buf)showBuf(l)},600);return}
   l.lz.push({x0:l.cv.width/2,y0:l.cv.height*.62,x1:t.x,y1:t.y,l:1,c:COLS[l.i],f:l.i===0?fx():0});
-  l.hits=(l.hits||0)+1;kill(l,t,true);beep(900,.15,'square',.07,300);showBuf(l)}
+  l.hits=(l.hits||0)+1;kill(l,t,true);beep(900,.15,'square',.07,300);if(l.i===0)special(l,t);showBuf(l)}
 function kill(l,a,pts){l.ast=l.ast.filter(x=>x!==a);
   for(let k=0;k<(S.light?4:18);k++){const an=Math.random()*6.28,s=Math.random()*3+1;l.pt.push({x:a.x,y:a.y,vx:Math.cos(an)*s,vy:Math.sin(an)*s,l:1})}
   if(!pts)return;l.score+=Math.round(CFG.points*(CFG.difMul[dif]||1));l.el.querySelector('.sc').textContent=l.score;
@@ -516,11 +536,11 @@ function spawn(l,w){let q,g=0;do{q=makeQ()}while(g++<6&&l.ast.some(a=>a.a===q.a)
   const t=q.q.replace(/ = \?$/,''),r=t.length>9?Math.min(w*.16,54):Math.min(Math.max(w*.075,26),38),rr=Math.random();
   l.ast.push({t,a:q.a,r,x:r+8+Math.random()*Math.max(1,w-2*r-16),y:-r,type:rr<.08*CFG.power?'ice':rr<.14*CFG.power?'bom':'n',sd:Math.random()*10})}
 function update(dt){tl-=dt/1000;$('#timer').textContent=fmt(Math.max(0,tl));
-  L.forEach(l=>{if(!l.alive)return;const w=l.cv.width,h=l.cv.height;if(!w)return;
+  L.forEach(l=>{if(!l.alive)return;const w=l.cv.width,h=l.cv.height;if(!w)return;if(l.sh>0)l.sh-=dt;
     if(l.fr>0){l.fr-=dt;if(l.fr<=0)l.el.querySelector('.beku').style.display='none'}
-    else{l.sp+=dt;if(l.sp>=[4200,3300,2500,1800][dif]*CFG.spawn){l.sp=0;spawn(l,w)}
-      const v=[30,42,58,80][dif]*CFG.speed*(h/700)*dt/1000*(1-.05*((l.ship&&l.ship.eng)||0));l.ast.forEach(a=>a.y+=v)}
-    for(const a of l.ast.slice()){if(a.y+a.r>=h*.6){l.ast=l.ast.filter(x=>x!==a);
+    else{l.sp+=dt;if(l.sp>=[4200,3300,2500,1800,840][dif]*CFG.spawn){l.sp=0;spawn(l,w)}
+      const v=[30,42,58,80,150][dif]*CFG.speed*(h/700)*dt/1000*(1-.05*((l.ship&&l.ship.eng)||0));l.ast.forEach(a=>a.y+=v)}
+    for(const a of l.ast.slice()){if(a.y+a.r>=h*.6){if(l.sh>0){kill(l,a,false);continue}l.ast=l.ast.filter(x=>x!==a);
       if(a.type==='n'){l.lives--;lives(l);l.fl=300;beep(110,.3,'sawtooth',.1,40);
         if(l.lives<=0){l.alive=false;l.ast=[];l.el.classList.add('dead');setWait(l,'HABIS','bad');break}}}}});
   if(tl<=0||L.every(l=>!l.alive))end()}
@@ -550,6 +570,7 @@ function drawLaser(cx,z){const a=Math.max(0,z.l),f=S.light?0:(z.f||0),dx=z.x1-z.
   else if(f===2){cx.shadowColor='#60a5fa';cx.shadowBlur=12;cx.strokeStyle='#e0f2fe';cx.lineWidth=3;cx.beginPath();cx.moveTo(z.x0,z.y0);for(let k=1;k<8;k++){const t=k/8;cx.lineTo(z.x0+dx*t+(Math.random()-.5)*28,z.y0+dy*t+(Math.random()-.5)*28)}cx.lineTo(z.x1,z.y1);cx.stroke()}
   else if(f===3){for(let k=0;k<16;k++){const t=Math.random();cx.fillStyle=k%2?'#f97316':'#fde047';cx.beginPath();cx.arc(z.x0+dx*t+(Math.random()-.5)*12,z.y0+dy*t+(Math.random()-.5)*12,3+Math.random()*4,0,7);cx.fill()}}
   else if(f===4){const t=Math.min(1,1-a+.1),hx=z.x0+dx*t,hy=z.y0+dy*t,tt=Math.max(0,t-.35),g=cx.createLinearGradient(z.x0+dx*tt,z.y0+dy*tt,hx,hy);g.addColorStop(0,'rgba(147,197,253,0)');g.addColorStop(1,'#fff');cx.strokeStyle=g;cx.lineWidth=7;cx.beginPath();cx.moveTo(z.x0+dx*tt,z.y0+dy*tt);cx.lineTo(hx,hy);cx.stroke();cx.shadowColor='#93c5fd';cx.shadowBlur=14;cx.fillStyle='#fff';cx.beginPath();cx.arc(hx,hy,7,0,7);cx.fill()}
+  else if(f===6){const g=cx.createLinearGradient(z.x0,z.y0,z.x1,z.y1);g.addColorStop(0,'#6366f1');g.addColorStop(.5,'#c084fc');g.addColorStop(1,'#f0abfc');cx.shadowColor='#c084fc';cx.shadowBlur=22;cx.strokeStyle=g;cx.lineWidth=10;ln();cx.strokeStyle='#fff';cx.lineWidth=2;ln();cx.fillStyle='#fff';for(let k=0;k<8;k++){const t=(k+(1-a)*3)/8%1;cx.beginPath();cx.arc(z.x0+dx*t+Math.sin(t*20)*6,z.y0+dy*t,3,0,7);cx.fill()}}
   else{cx.lineWidth=3;for(let k=0;k<3;k++){cx.strokeStyle='hsl('+((performance.now()/3+k*60)%360)+',100%,60%)';ln((k-1)*6)}}
   cx.shadowBlur=0;cx.globalAlpha=1}
 function draw(l,dt){const cv=l.cv,w=cv.clientWidth,h=cv.clientHeight;if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}
@@ -560,7 +581,9 @@ function draw(l,dt){const cv=l.cv,w=cv.clientWidth,h=cv.clientHeight;if(cv.width
   l.lz.forEach(z=>{z.l-=dt/220;drawLaser(cx,z)});
   cx.globalAlpha=1;l.lz=l.lz.filter(z=>z.l>0);
   if(l.alive)drawShip(cx,w/2,h*.72,Math.min(h*.075,w*.1),NOSE[l.i],l.ship);
-  for(let i=l.pt.length-1;i>=0;i--){const p=l.pt[i];p.x+=p.vx;p.y+=p.vy;p.l-=.04;if(p.l<=0){l.pt.splice(i,1);continue}cx.globalAlpha=p.l;cx.fillStyle='#fbbf24';cx.fillRect(p.x,p.y,4,4)}
+  if(l.sh>0){const al=Math.min(1,l.sh/700)*(.6+.2*Math.sin(performance.now()/110));cx.save();cx.globalAlpha=al;cx.shadowColor='#22d3ee';cx.shadowBlur=16;cx.strokeStyle='#67e8f9';cx.lineWidth=4;cx.beginPath();cx.moveTo(0,h*.6);cx.lineTo(w,h*.6);cx.stroke();cx.globalAlpha=al*.25;cx.fillStyle='#22d3ee';cx.fillRect(0,h*.6,w,h*.14);cx.globalAlpha=al;cx.beginPath();cx.arc(w/2,h*.72,Math.min(h*.1,w*.13),0,7);cx.stroke();cx.restore()}
+  for(let i=l.ex.length-1;i>=0;i--){const e=l.ex[i];e.l-=dt/450;if(e.l<=0){l.ex.splice(i,1);continue}cx.globalAlpha=e.l;cx.strokeStyle=e.c;cx.lineWidth=5;cx.beginPath();cx.arc(e.x,e.y,e.R*(1.15-e.l*.75),0,7);cx.stroke()}cx.globalAlpha=1;
+  for(let i=l.pt.length-1;i>=0;i--){const p=l.pt[i];p.x+=p.vx;p.y+=p.vy;p.l-=.04;if(p.l<=0){l.pt.splice(i,1);continue}cx.globalAlpha=p.l;cx.fillStyle=p.c||'#fbbf24';cx.fillRect(p.x,p.y,4,4)}
   cx.globalAlpha=1;if(l.fl>0){l.fl-=dt;cx.fillStyle='rgba(239,68,68,.25)';cx.fillRect(0,0,w,h)}}
 function loop(t){const dt=Math.min(50,t-lastT);lastT=t;
   if($('#game').classList.contains('on')){if(!over&&!paused)update(dt);L.forEach(l=>draw(l,paused?0:dt))}
