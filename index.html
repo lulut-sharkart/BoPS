@@ -179,6 +179,11 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 .mi i{font-style:normal;font-size:1.2rem;width:1.6rem;text-align:center}
 .mi[hidden]{display:none}
 .mi:active{background:#334155}
+.modal .sbox.wide{width:min(1280px,100%)!important}
+.wg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:8px;align-items:stretch}
+.wg>.it{margin-bottom:0}.wg>:not(.it){grid-column:1/-1}
+#regb .lvg{grid-template-columns:repeat(auto-fill,minmax(46px,1fr))}
+.mdf{display:inline-block;font-size:.55em;font-weight:900;color:#000;background:#f59e0b;border-radius:6px;padding:2px 8px;vertical-align:middle;letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -246,10 +251,10 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 <div id="auth" class="modal"><div class="sbox" id="authb"></div></div>
 <div id="lb" class="modal"><div class="sbox"><h2>🏆 LEADERBOARD</h2><div class="tabs" id="lbt"></div><div class="tabs" id="lbt2"></div><div id="lbl"></div><button class="cl">TUTUP</button></div></div>
 <div id="admin" class="modal"><div class="sbox" style="width:min(640px,100%)"><h2>🛠 PANEL ADMIN</h2><div class="tabs" id="adt"></div><div id="adb"></div><button class="cl">TUTUP</button></div></div>
-<div id="gar" class="modal"><div class="sbox" style="width:min(600px,100%)"><h2>🚀 SPACESHIP GARAGE</h2><div class="tabs" id="gart"></div><div id="garb"></div><button class="cl">TUTUP</button></div></div>
-<div id="shop" class="modal"><div class="sbox" style="width:min(600px,100%)"><h2>🛒 SPACE STORE</h2><div class="tabs" id="shopt"></div><div id="shopb"></div><button class="cl">TUTUP</button></div></div>
-<div id="reg" class="modal"><div class="sbox" style="width:min(600px,100%)"><h2>🌌 WILAYAH PERBURUAN</h2><div id="regb"></div><button class="cl">TUTUP</button></div></div>
-<div id="itm" class="modal" style="z-index:25"><div class="sbox"><h2>🎒 BAWA ITEM?</h2><p class="note" id="itnote"></p><div id="itml"></div><button class="bt" id="itgo" style="background:#10b981">🚀 MULAI DENGAN ITEM</button><button class="bt" id="itn" style="background:#334155">TANPA ITEM</button></div></div>
+<div id="gar" class="modal"><div class="sbox wide"><h2>🚀 SPACESHIP GARAGE</h2><div class="tabs" id="gart"></div><div id="garb" class="wg"></div><button class="cl">TUTUP</button></div></div>
+<div id="shop" class="modal"><div class="sbox wide"><h2>🛒 SPACE STORE</h2><div class="tabs" id="shopt"></div><div id="shopb" class="wg"></div><button class="cl">TUTUP</button></div></div>
+<div id="reg" class="modal"><div class="sbox wide"><h2>🌌 WILAYAH PERBURUAN</h2><div id="regb" class="wg"></div><button class="cl">TUTUP</button></div></div>
+<div id="itm" class="modal" style="z-index:25"><div class="sbox wide"><h2>🎒 BAWA ITEM?</h2><p class="note" id="itnote"></p><div id="itml" class="wg"></div><button class="bt" id="itgo" style="background:#10b981">🚀 MULAI DENGAN ITEM</button><button class="bt" id="itn" style="background:#334155">TANPA ITEM</button></div></div>
 <div id="exit" class="modal" style="z-index:30"><div class="sbox"><h2>⚠ KELUAR DARI GAME?</h2><p class="note">Permainan yang sedang berjalan akan dihentikan dan <b>datanya tidak disimpan</b> (skor dan koin tidak dihitung).</p><button class="bt" id="xstay" style="background:#10b981">LANJUT BERMAIN</button><button class="bt" id="xgo" style="background:#be123c">KELUAR</button></div></div>
 <div id="ins" class="modal" style="z-index:35"><div class="sbox"><h2>💥 PESAWAT MELEDAK</h2><p class="note" id="insn"></p><button class="bt" id="insy" style="background:#10b981">✅ KLAIM ASURANSI</button><button class="bt" id="insx" style="background:#334155">TIDAK KLAIM</button></div></div>
 <div id="stat" class="modal" style="z-index:28"><div class="sbox" style="width:min(460px,100%)"><h2 id="statt"></h2><div id="statb"></div><button class="cl">TUTUP</button></div></div>
@@ -272,7 +277,7 @@ let dbQ=[],dbQLoaded=false;
 try{Object.assign(S,JSON.parse(localStorage.getItem('bps')||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem('bps',JSON.stringify(S))}catch(e){}};
 /* ===== HP, pasif, servis, asuransi (disimpan lokal per akun) ===== */
-const XD=()=>({ships:{},svc:[0,0,0,0,0],grd:0,pot:0,spent:0,mana:0,gkt:0,ringX:0});let X=XD();
+const XD=()=>({ships:{},svc:[0,0,0,0,0],grd:0,pot:0,prs:0,spent:0,mana:0,gkt:0,ringX:0});let X=XD();
 const XK=()=>'bpsx_'+(user?user.id:'x');
 function xl(){try{X=Object.assign(XD(),JSON.parse(localStorage.getItem(XK())||'{}'))}catch(e){X=XD()}}
 const xs=()=>{try{localStorage.setItem(XK(),JSON.stringify(X))}catch(e){}};
@@ -284,10 +289,13 @@ pdesc=(p,lv)=>{const v=PV[p](lv);return{gold:'HP +'+fm(v.hp*100)+'%',wood:'Mengi
 const ELS=['gold','wood','water','fire','earth','wind','light','thunder'];
 const PI={gold:['Logam (Gold)','🥇','HP +25%'],wood:['Kayu (Wood)','🌳','Mengikat meteor terdekat 10 dtk • CD 20 dtk'],water:['Air (Water)','💧','Regenerasi HP 2% tiap jawaban benar'],fire:['Api (Fire)','🔥','Bonus koin combo +75% selama 5 dtk • CD 15 dtk'],earth:['Tanah (Earth)','🪨','Bonus koin +25% per soal'],wind:['Angin (Wind)','🌪️','Membalikkan meteor yang akan menabrak • CD 20 dtk'],light:['Cahaya (Light)','✨','Sinar perlindungan + menembak 1 meteor • CD 20 dtk'],thunder:['Guntur (Lightning)','⚡','Mengikat 3 meteor saling tarik; 1 jawaban meledakkan 3 • CD 30 dtk']};
 const sk=()=>user&&user.ship&&user.eqShip?'i'+user.eqShip:'def';
-const RAR=['Normal','Elite','Special','Epic','Epic Limited','Collector','Legend','Mythic','Ultimate','Transcendent','Original Exclusive'],RARC=['#94a3b8','#4ade80','#38bdf8','#a855f7','#e879f9','#fb923c','#facc15','#f43f5e','#22d3ee','#fde047','#ffffff'],RPN=[1,1,2,3,3,4,5,6,7,8,8],RTH=[0,150,300,500,800,1200,2000,3500,6000,10000,20000],ENM=['Standar','Ion','Plasma','Fusion','Antimateri','Warp'];
-function rarOf(did,cat,price){const o=CFG.rar&&CFG.rar[did];if(o!=null&&o!=='')return Math.min(10,Math.max(0,+o||0));if(!cat||did===1)return 0;let r=0;RTH.forEach((t,i)=>{if((+price||0)>=t)r=i});return r}
-function psList(did,cat,eng,rec,price){const rar=rarOf(did,cat,price);if(rec&&rec.pas)return{ps:[rec.pas],lock:[],rar};if(!cat&&did!==1)return{ps:[],lock:[],rar};
-  const all=Array.from({length:RPN[rar]},(_,k)=>ELS[((did-1)%8+k)%8]);return eng>=1?{ps:all,lock:[],rar}:{ps:[],lock:all,rar}}
+const RAR=['Normal','Elite','Special','Epic','Limited','Collector','Legend','Mythic','Ultimate','Transcendent','Original Exclusive'],RARC=['#94a3b8','#4ade80','#38bdf8','#a855f7','#e879f9','#fb923c','#facc15','#f43f5e','#22d3ee','#fde047','#ffffff'],RPN=[1,1,2,3,3,4,5,6,7,8,8],RTH=[0,150,300,500,800,1200,2000,3500,6000,10000,20000],ENM=['Standar','Ion','Plasma','Fusion','Antimateri','Warp'];
+function rarOf(did,cat,price){const o=CFG.rar&&CFG.rar[did];if(o!=null&&o!=='')return Math.min(10,Math.max(0,+o||0));if(did===1)return 0;if(!cat)return 2;let r=0;RTH.forEach((t,i)=>{if((+price||0)>=t)r=i});return r}
+const PMAXT=[2,2,3,4,4,5,6,7,8,8,8],PMX=rar=>{const a=CFG.pasMax,v=a&&a[rar]!=null?+a[rar]:PMAXT[rar];return Math.min(ELS.length,Math.max(RPN[rar],v||0))},baseOf=(did,rar)=>Array.from({length:RPN[rar]},(_,k)=>ELS[((did-1)%8+k)%8]),PRSN=()=>Math.max(1,Math.round(+CFG.prsPot)||3);
+function psList(did,cat,eng,rec,price){const rar=rarOf(did,cat,price),add=(rec&&rec.add)||[];
+  if(rec&&rec.pas)return{ps:[rec.pas].concat(add.filter(e=>e!==rec.pas)),lock:[],rar};
+  if(!cat&&did!==1)return{ps:add.slice(),lock:[],rar};
+  const all=baseOf(did,rar),ex=add.filter(e=>!all.includes(e));return eng>=1?{ps:all.concat(ex),lock:[],rar}:{ps:ex,lock:all,rar}}
 function shipInfo(){const k=sk(),rec=X.ships[k]=X.ships[k]||{},s=user&&user.ship,r=s?psList(s.id,s.cat,s.eng,rec,s.price):{ps:[],lock:[],rar:0};
   return{rec,ps:r.ps,lock:r.lock,rar:r.rar,cust:!!(s&&!s.cat&&s.id!==1)}}
 const mxOf=(ps,rec)=>ps.includes('gold')?Math.round(100*(1+PV.gold(plvR(rec,'gold')).hp)):100,mxHp=si=>mxOf(si.ps,si.rec);
@@ -509,11 +517,11 @@ function applyCfg(){CFG.time=Math.max(30,+CFG.time||300);CFG.lives=Math.min(10,M
   if(!Array.isArray(CFG.fxPrice))CFG.fxPrice=String(CFG.fxPrice).split(',');const FPD=[0,300,500,700,900,1200,2000],FUD=[150,200,250,300,350,400,800];CFG.fxPrice=FPD.map((d,i)=>{const v=parseFloat(CFG.fxPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});CFG.fxPrice[0]=0;
   if(!Array.isArray(CFG.fxUpPrice))CFG.fxUpPrice=String(CFG.fxUpPrice).split(',');CFG.fxUpPrice=FUD.map((d,i)=>{const v=parseFloat(CFG.fxUpPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});
   if(!Array.isArray(CFG.difMul))CFG.difMul=String(CFG.difMul).split(',');CFG.difMul=[0,1,2,3,4].map(i=>{const v=parseFloat(CFG.difMul[i]);return v>0?Math.min(v,10):[1,1.5,2,3,5][i]});
-  const IPD=[1000,10000,1000,3000,1500,1200,3000,5000,5000,5000],RMD=[1,1.5,2,2.5,3,4,5,6,7,8];if(!Array.isArray(CFG.itemPrice))CFG.itemPrice=String(CFG.itemPrice).split(',');CFG.itemPrice=IPD.map((d,i)=>{const v=parseFloat(CFG.itemPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});if(!Array.isArray(CFG.regionMul))CFG.regionMul=String(CFG.regionMul).split(',');if(CFG.regionMul.length===9)CFG.regionMul.splice(8,0,7);CFG.regionMul=RMD.map((d,i)=>{const v=parseFloat(CFG.regionMul[i]);return v>0?Math.min(v,100):d});
+  const IPD=[1000,10000,1000,3000,1500,1200,3000,5000,5000,5000],RMD=[1,1.5,2,2.5,3,4,5,6,7,8,9];if(!Array.isArray(CFG.itemPrice))CFG.itemPrice=String(CFG.itemPrice).split(',');CFG.itemPrice=IPD.map((d,i)=>{const v=parseFloat(CFG.itemPrice[i]);return isNaN(v)?d:Math.max(0,Math.round(v))});if(!Array.isArray(CFG.regionMul))CFG.regionMul=String(CFG.regionMul).split(',');if(CFG.regionMul.length===9)CFG.regionMul.splice(8,0,7);if(CFG.regionMul.length===10){const o=CFG.regionMul,same=o.every((v,i)=>+v===[1,1.5,2,2.5,3,4,5,6,7,8][i]);CFG.regionMul=same?RMD.slice():[o[0],o[1],o[2],o[3],o[4],o[5],o[6],6,o[8],o[7],o[9]]}CFG.regionMul=RMD.map((d,i)=>{const v=parseFloat(CFG.regionMul[i]);return v>0?Math.min(v,100):d});
   const nz=(v,d)=>{if(!Array.isArray(v))v=String(v==null?'':v).split(',');return d.map((x,i)=>{const n=parseFloat(v[i]);return isNaN(n)?x:Math.max(0,Math.round(n))})};
   CFG.slotPrices=nz(CFG.slotPrices,[1000,2000,3000,4000,5000,6000,7000]);CFG.ringPrices=nz(CFG.ringPrices,Array.from({length:19},(_,k)=>1500*(k+1)));CFG.svcPrice=nz(CFG.svcPrice,[10,20,30,40,50]);SVCP=CFG.svcPrice;if(!Array.isArray(CFG.openTopics))CFG.openTopics=[];
   $$('#diff button').forEach((b,i)=>{const n=['MUDAH','SEDANG','SULIT','EXTREME','GOD KING'][i],m=CFG.difMul[i];b.textContent=n+(m!==1?' ×'+m:'')});
-  const D={coinPerHit:1,coinRate:.5,marketFee:.05,engineBase:150,blockPrice:200,blockStep:8,guardPrice:500,potionPrice:800,manaPrice:10000,gktPrice:1000,hazard:1,plMax:10};for(const k in D)CFG[k]=isNaN(parseFloat(CFG[k]))?D[k]:+CFG[k];CFG.blockStep=Math.max(1,Math.round(CFG.blockStep));GRDP=Math.max(0,Math.round(CFG.guardPrice));POTP=Math.max(0,Math.round(CFG.potionPrice));CFG.manaPrice=Math.max(0,Math.round(CFG.manaPrice));CFG.gktPrice=Math.max(0,Math.round(CFG.gktPrice));CFG.hazard=Math.max(0,CFG.hazard);CFG.plMax=Math.min(50,Math.max(1,Math.round(CFG.plMax)));
+  const D={coinPerHit:1,coinRate:.5,marketFee:.05,engineBase:150,blockPrice:200,blockStep:8,guardPrice:500,potionPrice:800,manaPrice:10000,gktPrice:1000,hazard:1,plMax:10,prsPrice:5000,prsPot:3};for(const k in D)CFG[k]=isNaN(parseFloat(CFG[k]))?D[k]:+CFG[k];CFG.blockStep=Math.max(1,Math.round(CFG.blockStep));GRDP=Math.max(0,Math.round(CFG.guardPrice));POTP=Math.max(0,Math.round(CFG.potionPrice));CFG.manaPrice=Math.max(0,Math.round(CFG.manaPrice));CFG.gktPrice=Math.max(0,Math.round(CFG.gktPrice));CFG.hazard=Math.max(0,CFG.hazard);CFG.plMax=Math.min(50,Math.max(1,Math.round(CFG.plMax)));CFG.prsPrice=Math.max(0,Math.round(CFG.prsPrice));CFG.prsPot=Math.max(1,Math.round(CFG.prsPot));CFG.pasMax=nz(CFG.pasMax,PMAXT);
   $('#ttl').textContent=CFG.title;$('#ft').textContent=CFG.footer;bgmSync()}
 async function loadCfg(){if(!sb)return;try{
   const c=await sb.from('app_settings').select('value').eq('key','config').maybeSingle();if(c.data&&c.data.value)Object.assign(CFG,c.data.value);
@@ -591,6 +599,25 @@ async function saveScore(){const w=$('#wsave');w.textContent='';if(!sb||!L[0])re
   const r=await sb.rpc('submit_score',{p_score:L[0].score,p_mode:mode,p_level:dif,p_hits:L[0].hits||0});
   if(r.error){w.textContent='Skor gagal disimpan: '+r.error.message;return}
   w.textContent='Skor tersimpan ✓  +'+r.data.earned+' koin (total 🪙'+r.data.coins+')';refreshMe()}
+const mkBlocks=a=>{const o=[];a.forEach((q,y)=>{for(let x=0;x<5;x++){const ch=q[x];if(ch&&ch!=='.'){o.push([x,y,+ch]);if(x<4)o.push([8-x,y,+ch])}}});return o};
+const SSHIPS=[
+{n:'Luxury VIP Aircraft',r:4,p:800,a:["....2","...22","...00","2.040","22000","20000","20022",".2.02","....1"]},
+{n:'Silver Dragon Phantom Ship',r:1,p:150,a:["....0","...70","7.770","77070","07000",".7077","..707","...7.","....4"]},
+{n:'Wood Grain Boat',r:1,p:150,a:["....0","...00","..000","....2","2.222","22222","22222",".2222","..222"]},
+{n:'Fan Nuo Fortress',r:2,p:300,a:["7.7.7","77777","77277","72227","77777","77077","7.7.7","77777","1.1.1"]},
+{n:'Sky Wolf Palace',r:2,p:300,a:["....4","...44","..404","4.400","44000","40040",".4.04","..4.4","....1"]},
+{n:'White Needle',r:2,p:300,a:["....0","....0","....0","....0","...00","...00","...40","..000","....1"]},
+{n:'Craftsman God Planet',r:2,p:300,a:[".....","..444",".4444","44444","22222","44444",".4444","..444","....."]},
+{n:'Imperial Jewelry Palace',r:3,p:500,a:["....2","...26","..266","..222","6.626","66666","62226",".6666","..6.6"]},
+{n:'North Prison',r:3,p:500,a:["7.7.7","77777","70707","70707","77777","70707","70707","77777","1...1"]},
+{n:'Tian Liu Fan',r:3,p:500,a:["....5","...55","..555",".5555","55555",".5.05","...00","..0.0","....2"]},
+{n:'Ancient Palace',r:3,p:500,a:["....2","...22","..222","....3","3.333","33233","33333","3.3.3","3.3.3"]},
+{n:'Boat of Mausoleum',r:10,p:20000,act:false,a:["....0","...00","..050","....5","0.000","05050","00000",".0000","..0.0"]},
+{n:'Ancestor Mountain',r:7,p:3500,a:["....0","...00","..707","..777",".7777","77777","77177","77777","77777"]},
+{n:'Blood Orchid Palace',r:6,p:2000,a:["....6","..6.6","..666","...16","1.111","11611","61111",".6.11","...6."]},
+{n:'Flame Wind Ancient Kingdom Military Warship',r:6,p:2000,a:["....1","...12","...22","1..22","12222","12122","11111","1.1.1","2.2.2"]},
+{n:'Rampaging Battleship',r:4,p:800,a:["....7","...77","7..17","77777","71717","77777","77777",".7777","1.1.1"]},
+{n:'Soul Feather White Sparrow',r:3,p:500,a:["....0","...00","..000",".0004","00000","0.000","..0.0","....0","....2"]}];
 const PAL=['#f8fafc','#ef4444','#f59e0b','#22c55e','#38bdf8','#6366f1','#ec4899','#64748b'];
 function drawBlocks(cx,x,y,cs,bl,eng){const ox=x-4.5*cs,oy=y-4.5*cs,low={};bl.forEach(b=>{if(low[b[0]]==null||b[1]>low[b[0]])low[b[0]]=b[1]});
   cx.fillStyle='#22d3ee';cx.globalAlpha=.85;
@@ -605,40 +632,44 @@ function bindSt(o,data,mk){data.forEach(r=>{const c=o.querySelector('[data-b="'+
 const invStat=(r,src)=>{const d=r.design,cat=!!d.is_catalog,did=r.design_id;return{name:d.name,blocks:d.blocks,did,cat,price:d.price||0,eng:r.engine_lv,src:src||(did===1?'Pesawat Awal':cat?'Toko Resmi':'Buatan Pemain'+(d.creator_name?' • '+d.creator_name:'')),rec:X.ships['i'+r.id]||{},key:'i'+r.id,cust:!cat&&did!==1,after:()=>renderGar()}};
 function showStats(o){const rec=o.rec||{},eng=o.eng||0,r=psList(o.did,o.cat,eng,rec,o.price),mx=mxOf(r.ps,rec),hp=rec.hp==null?mx:Math.min(mx,rec.hp),
   row=(a,b)=>'<div class="row"><span>'+a+'</span><span style="text-align:right;font-size:.75rem">'+b+'</span></div>',pl=l=>l.map(e=>PI[e][1]+' '+PI[e][0]+' • Lv '+plvR(rec,e)+'/'+PLMAX()+'<small>'+pdesc(e,plvR(rec,e))+'</small>'+(o.key&&r.ps.includes(e)&&plvR(rec,e)<PLMAX()?'<small style="color:#4ade80">▶ Lv '+(plvR(rec,e)+1)+': '+pdesc(e,plvR(rec,e)+1)+'</small>':'')+(o.key&&r.ps.includes(e)?'<button class="sm" data-mu="'+e+'" style="margin-top:4px"'+((X.mana||0)>0&&plvR(rec,e)<PLMAX()?'':' disabled')+'>🧴 Tingkatkan (−1 Bottle)</button>':'')).join('<br>');
-  $('#statt').textContent=o.name;
+  $('#statt').innerHTML=esc(o.name)+(rec.mod?' <span class="mdf">Modifed</span>':'');
   let h='<div style="text-align:center;margin-bottom:8px"><canvas id="stc" width="64" height="64" style="width:112px;height:112px;background:#0b1020;border-radius:12px"></canvas></div>'
    +row('❤ Kesehatan (HP)',Math.ceil(hp)+' / '+mx+'<br>'+hpBar(hp,mx))
    +row('🚀 Jenis Mesin',(ENM[eng]||'Warp')+' • Lv '+eng+'/5')
-   +row('✨ Kemampuan Pasif',r.ps.length?pl(r.ps):r.lock.length?'🔒 Terbuka di mesin Lv 1'+pl(r.lock):o.cust?'Belum ada (pakai Potion of Passive)':'Tidak ada')
+   +row('✨ Kemampuan Pasif',r.ps.length?pl(r.ps):r.lock.length?'🔒 Terbuka di mesin Lv 1'+pl(r.lock):o.cust?'Belum ada (pasang lewat PRS + Potion of Passive)':'Tidak ada')
    +row('🌍 Asal Pesawat',esc(o.src))
-   +row('💎 Kelangkaan','<b style="color:'+RARC[r.rar]+'">'+RAR[r.rar]+'</b><small>'+RPN[r.rar]+' pasif</small>')
+   +row('💎 Kelangkaan','<b style="color:'+RARC[r.rar]+'">'+RAR[r.rar]+'</b><small>Maksimal '+PMX(r.rar)+' pasif (tidak bisa ditambah lagi)</small>')
    +row('💨 Kecepatan Maksimal',(100+eng*20+r.rar*10)+' km/dtk')
    +row('🧱 Jumlah Blok',(o.blocks||[]).length);
-  if(o.cust&&!rec.pas&&o.key)h+=X.pot>0?'<button class="bt" id="stp" style="background:#7c3aed">🧪 Pakai Potion of Passive (×'+X.pot+')</button><div class="pe" id="stpe" style="display:none">'+ELS.map(e=>'<button class="sm" data-pe="'+e+'">'+PI[e][1]+' '+PI[e][0]+'</button>').join('')+'</div>':'<p class="note">Beli Potion of Passive di Space Store (tab Servis) untuk memberi pesawat ini 1 pasif.</p>';
+  if(o.key){const base=(o.cat||o.did===1)?baseOf(o.did,r.rar):(rec.pas?[rec.pas]:[]),cur=base.concat(rec.add||[]),cap=PMX(r.rar),av=ELS.filter(e=>!cur.includes(e)),need=PRSN();
+    h+='<div class="note" style="border-top:1px solid #334155;padding-top:8px">🛠 <b>Modifikasi Pasif</b> • Slot pasif '+cur.length+' / '+cap+'</div>';
+    if(rec.mod)h+='<p class="note">📜 PRS sudah dipakai pada pesawat ini (<b>Modifed</b>). PRS hanya bisa dipakai 1× per pesawat.</p>';
+    else if(cur.length>=cap||!av.length)h+='<p class="note">Pesawat berkelangkaan '+RAR[r.rar]+' sudah mencapai batas maksimal pasif ('+cap+'). Tidak bisa ditambah.</p>';
+    else{const ok=(X.prs||0)>=1&&(X.pot||0)>=need;h+='<p class="note">Syarat: 📜 PRS (Permit to Repair a Spacecraft) ×1 (punya '+(X.prs||0)+') + 🧪 Potion of Passive ×'+need+' (punya '+(X.pot||0)+'). Beli di Space Store (tab Servis). Setelah dipakai pesawat ditandai <b>Modifed</b> dan tidak bisa dimodifikasi lagi.</p><button class="bt" id="stp" style="background:#7c3aed"'+(ok?'':' disabled')+'>🛠 Pasang Pasif Baru (−1 PRS, −'+need+' Potion)</button><div class="pe" id="stpe" style="display:none">'+av.map(e=>'<button class="sm" data-pe="'+e+'">'+PI[e][1]+' '+PI[e][0]+'</button>').join('')+'</div>'}}
   if(r.ps.length&&o.key)h+='<p class="note">🧴 Bottle of Mana: <b>×'+(X.mana||0)+'</b>. 1 botol menaikkan 1 pasif sebanyak 1 tingkat. Tiap tingkat selalu memberi keuntungan nyata (mis. cooldown −1 dtk, durasi lebih lama, atau bonus lebih besar); lihat baris hijau untuk hasil tingkat berikutnya. Beli di Space Store (tab Item).</p>';$('#statb').innerHTML=h;drawPrev($('#stc'),o.blocks,eng);
   const sp=$('#stp');if(sp)sp.onclick=()=>{$('#stpe').style.display='grid'};
-  $$('#statb [data-pe]').forEach(b=>b.onclick=()=>{const e=b.dataset.pe;if(!confirm('Pasang pasif '+PI[e][0]+'? Hanya satu dan tidak bisa diganti.'))return;X.pot--;X.ships[o.key]=Object.assign(X.ships[o.key]||{},{pas:e});xs();o.rec=X.ships[o.key];showStats(o);if(o.after)o.after()});
+  $$('#statb [data-pe]').forEach(b=>b.onclick=()=>{const e=b.dataset.pe;const need=PRSN();if((X.prs||0)<1||(X.pot||0)<need){alert('PRS atau Potion of Passive tidak cukup.');return}if(!confirm('Pasang pasif '+PI[e][0]+'? Memakai 1 PRS dan '+need+' Potion of Passive. Pasif tidak bisa diganti dan pesawat ditandai Modifed.'))return;X.prs--;X.pot-=need;const rr=X.ships[o.key]=X.ships[o.key]||{};rr.add=(rr.add||[]).concat(e);rr.mod=true;xs();o.rec=rr;showStats(o);if(o.after)o.after()});
   $$('#statb [data-mu]').forEach(b=>b.onclick=()=>{const e=b.dataset.mu;if((X.mana||0)<1||!o.key)return;const rr=X.ships[o.key]=X.ships[o.key]||{};rr.pl=rr.pl||{};const lv=plvR(rr,e);if(lv>=PLMAX())return;rr.pl[e]=lv+1;X.mana--;xs();o.rec=rr;showStats(o);if(o.after)o.after()});
   $('#stat').classList.add('on')}
 function renderSvc(o){const si=shipInfo(),rec=si.rec,mx=mxHp(si),hp=rec.hp==null?mx:Math.min(mx,rec.hp);
   let h=coinTxt()+'<div class="it"><div class="inf">❤ HP Pesawat: '+Math.ceil(hp)+' / '+mx+'<small>'+hpBar(hp,mx)+'<br>Makin sering tertabrak meteor, kerusakan makin parah. HP ≤ 0 = pesawat meledak dan tidak bisa diperbaiki.</small></div></div>';
   h+='<div class="sl">🔧 PART OF SERVICE</div>'+[1,2,3,4,5].map(n=>'<div class="it"><div class="inf">🔧 Part of Service Lv '+n+' ×'+X.svc[n-1]+'<small>Memulihkan '+20*n+' HP</small></div><div class="acts"><button class="sm" data-r="'+n+'"'+(X.svc[n-1]>0&&hp<mx?'':' disabled')+'>PAKAI</button></div></div>').join('');
-  h+='<div class="sl">✨ PASIF UNIK</div><div class="it"><div class="inf">'+(si.ps.length?si.ps.map(e=>PI[e][1]+' '+PI[e][0]+' • Lv '+plvR(si.rec,e)+'<small>'+pdesc(e,plvR(si.rec,e))+'</small>').join('<br>'):si.lock.length?'🔒 '+si.lock.map(e=>PI[e][0]).join(', ')+'<small>Upgrade mesin pesawat minimal Lv 1 untuk membuka pasif ini.</small>':'Belum ada pasif<small>Pesawat custom bisa diberi pasif dengan Potion of Passive.</small>')+'</div></div>';
-  if(si.cust&&!si.ps.length){h+='<div class="note">🧪 Potion of Passive ×'+X.pot+(X.pot>0?' — pilih satu pasif (tidak bisa diganti):':' — beli di Space Store (tab Servis).')+'</div>';
-    if(X.pot>0)h+='<div class="pe">'+ELS.map(e=>'<button class="sm" data-pe="'+e+'">'+PI[e][1]+' '+PI[e][0]+'</button>').join('')+'</div>'}
+  h+='<div class="sl">✨ PASIF UNIK</div><div class="it"><div class="inf">'+(si.ps.length?si.ps.map(e=>PI[e][1]+' '+PI[e][0]+' • Lv '+plvR(si.rec,e)+'<small>'+pdesc(e,plvR(si.rec,e))+'</small>').join('<br>'):si.lock.length?'🔒 '+si.lock.map(e=>PI[e][0]).join(', ')+'<small>Upgrade mesin pesawat minimal Lv 1 untuk membuka pasif ini.</small>':'Belum ada pasif<small>Tambah pasif lewat PRS + Potion of Passive (lihat statistik pesawat).</small>')+'</div></div>';
+  h+='<div class="note">🛠 Pasif tambahan: 📜 PRS ×'+(X.prs||0)+(rec.mod?' (pesawat ini sudah <b>Modifed</b>)':'')+' + 🧪 Potion of Passive ×'+X.pot+' (butuh '+PRSN()+'). Ketuk pesawat di Spaceship Garage › Pesawat untuk memasangnya.</div>';
   h+='<div class="note">🛡 Guard of Spaceship ×'+X.grd+' — asuransi '+X.grd*10+'% saat pesawat meledak.</div>';
   o.innerHTML=h;
-  o.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const n=+b.dataset.r;if(X.svc[n-1]<1)return;X.svc[n-1]--;rec.hp=Math.min(mx,hp+20*n);xs();renderSvc(o)});
-  o.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>{const e=b.dataset.pe;if(!confirm('Pasang pasif '+PI[e][0]+'? Hanya satu dan tidak bisa diganti.'))return;X.pot--;rec.pas=e;xs();renderSvc(o)})}
+  o.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const n=+b.dataset.r;if(X.svc[n-1]<1)return;X.svc[n-1]--;rec.hp=Math.min(mx,hp+20*n);xs();renderSvc(o)});}
 function shopSvc(o){const buy=(p,fn)=>{if(wal()<p){alert('Koin tidak cukup.');return}X.spent+=p;fn();xs();$('#acc').textContent='👤 '+user.name+' · 🪙'+wal();renderShop()};
   o.innerHTML=coinTxt()+[1,2,3,4,5].map(n=>'<div class="it"><div class="inf">🔧 Part of Service Lv '+n+'<small>Memulihkan '+20*n+' HP • Dimiliki: '+X.svc[n-1]+'</small></div><div class="acts"><button class="sm" data-s="'+n+'">BELI 🪙'+SVCP[n-1]+'</button></div></div>').join('')
    +'<div class="it"><div class="inf">🛡 Guard of Spaceship<small>Asuransi +10% nilai pesawat saat meledak (menumpuk) • Dimiliki: '+X.grd+'</small></div><div class="acts"><button class="sm" data-g="1">BELI 🪙'+GRDP+'</button></div></div>'
-   +'<div class="it"><div class="inf">🧪 Potion of Passive<small>Aktifkan 1 pasif unik pilihanmu untuk pesawat custom • Dimiliki: '+X.pot+'</small></div><div class="acts"><button class="sm" data-p="1">BELI 🪙'+POTP+'</button></div></div>';
+   +'<div class="it"><div class="inf">🧪 Potion of Passive<small>Dibutuhkan ×'+PRSN()+' untuk memasang 1 pasif tambahan (bersama PRS) • Dimiliki: '+X.pot+'</small></div><div class="acts"><button class="sm" data-p="1">BELI 🪙'+POTP+'</button></div></div>'
+   +'<div class="it" style="border-left:4px solid #f59e0b"><div class="inf">📜 PRS (Permit to Repair a Spacecraft)<small>Izin modifikasi: menambah 1 pasif ke 1 pesawat milikmu (hanya 1× per pesawat, lalu ditandai Modifed). Pasif tambahan tidak bisa melebihi batas kelangkaan pesawat. • Dimiliki: '+(X.prs||0)+'</small></div><div class="acts"><button class="sm" data-prs="1">BELI 🪙'+CFG.prsPrice+'</button></div></div>';
   o.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>buy(SVCP[+b.dataset.s-1],()=>X.svc[+b.dataset.s-1]++));
-  o.querySelector('[data-g]').onclick=()=>buy(GRDP,()=>X.grd++);o.querySelector('[data-p]').onclick=()=>buy(POTP,()=>X.pot++)}
+  o.querySelector('[data-g]').onclick=()=>buy(GRDP,()=>X.grd++);o.querySelector('[data-p]').onclick=()=>buy(POTP,()=>X.pot++);o.querySelector('[data-prs]').onclick=()=>buy(CFG.prsPrice,()=>X.prs=(X.prs||0)+1)}
 function slotCard(n){return '<div class="it" style="border-left:4px solid #38bdf8"><div class="inf">🅿 Slot Garasi: '+n+' / '+user.slots+'<small>Garasi dapat diupgrade sampai 10 slot'+(user.slots<10?' • tambah 1 slot = 🪙'+slotCost():' • sudah maksimal')+'</small></div><div class="acts">'+(user.slots<10?'<button class="sm" data-slot="1">⬆ SLOT 🪙'+slotCost()+'</button>':'<button class="sm" disabled>MAX</button>')+'</div></div>'}
 function ringCard(){const c=ringCap();return '<div class="it" style="border-left:4px solid #a78bfa"><div class="inf">💍 Space Ring • Kapasitas '+c+'/'+RMAX+'<small>Jumlah item yang bisa dibawa ke permainan. '+(c<RMAX?(c===1?'Beli Space Ring untuk membawa lebih dari 1 item.':'Upgrade menambah +1 kapasitas (maksimal '+RMAX+').'):'Sudah maksimal.')+'</small></div><div class="acts">'+(c<RMAX?'<button class="sm" data-ring="1">'+(c===1?'BELI':'⬆ UPGRADE')+' 🪙'+ringCost()+'</button>':'<button class="sm" disabled>MAX</button>')+'</div></div>'}
-const manaCard=()=>'<div class="it" style="border-left:4px solid #38bdf8"><div class="inf">🧴 Bottle of Mana ×'+(X.mana||0)+'<small>1 botol = +1 tingkat untuk 1 pasif pesawat. Pakai lewat statistik pesawat (tab Pesawat, ketuk pesawat).</small></div></div>';
+const manaCard=()=>'<div class="it" style="border-left:4px solid #38bdf8"><div class="inf">🧴 Bottle of Mana ×'+(X.mana||0)+'<small>1 botol = +1 tingkat untuk 1 pasif pesawat. Pakai lewat statistik pesawat (tab Pesawat, ketuk pesawat).</small></div></div><div class="it" style="border-left:4px solid #f59e0b"><div class="inf">📜 PRS ×'+(X.prs||0)+' • 🧪 Potion of Passive ×'+(X.pot||0)+'<small>Untuk memasang pasif tambahan: ketuk pesawat di tab Pesawat. Butuh 1 PRS + '+PRSN()+' Potion; PRS hanya 1× per pesawat.</small></div></div>';
+const modTag=id=>{const q=X.ships['i'+id];return q&&q.mod?' • <b style="color:#f59e0b">Modifed</b>':''};
 function bindRing(o,again){const b=o.querySelector('[data-ring]');if(b)b.onclick=async()=>{if(ringSrv()>=10){const p=ringCost();if(wal()<p){alert('Koin tidak cukup.');return}X.spent+=p;X.ringX=(X.ringX||0)+1;xs();$('#acc').textContent='👤 '+user.name+' · 🪙'+wal();again();return}if(await rpc('upgrade_ring')){await refreshMe();again()}}}
 const buyLocal=(p,fn)=>{if(wal()<p){alert('Koin tidak cukup.');return}X.spent+=p;fn();xs();$('#acc').textContent='👤 '+user.name+' · 🪙'+wal();renderShop()};
 const coinTxt=()=>'<div class="note" style="color:#fbbf24">🪙 Koin: <b>'+wal()+'</b></div>';
@@ -662,7 +693,7 @@ async function renderGar(){try{await sb.rpc('expire_listings')}catch(e){}mkTabs(
     let qm={};try{const qq=await sb.rpc('my_quotes');(qq.data||[]).forEach(x=>qm[x.inv_id]=x.val)}catch(e){}
     const qinfo=r=>{if(!r.listed_price)return '';const dl=r.listed_at?Math.max(0,30-Math.floor((Date.now()-new Date(r.listed_at))/864e5)):30;return ' • Taksiran makelar 🪙'+(qm[r.id]||'?')+' • sisa '+dl+' hari'};
     o.innerHTML=coinTxt()+slotCard(data.length)+data.map(r=>{const cost=Math.round(CFG.engineBase*(r.engine_lv+1)),eq=user.eqShip===r.id;
-      return '<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.design.name)+'<small>Mesin Lv '+r.engine_lv+'/5'+(r.listed_price?' • DIJUAL 🪙'+r.listed_price+qinfo(r):'')+'</small></div><div class="acts">'
+      return '<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.design.name)+'<small>Mesin Lv '+r.engine_lv+'/5'+modTag(r.id)+(r.listed_price?' • DIJUAL 🪙'+r.listed_price+qinfo(r):'')+'</small></div><div class="acts">'
         +(eq?'<button class="sm" disabled>✓ DIPAKAI</button>':r.listed_price?'':'<button class="sm" data-a="eq" data-id="'+r.id+'">PAKAI</button>')
         +(r.engine_lv<5?'<button class="sm" data-a="up" data-id="'+r.id+'">⬆ Mesin 🪙'+cost+'</button>':'')
         +(r.design_id===1?'':r.listed_price?'<button class="sm" data-a="unl" data-id="'+r.id+'">Batal jual</button>':'<button class="sm" data-a="sell" data-id="'+r.id+'">Jual</button>')+(r.design_id===1?'':'<button class="sm" data-a="des" data-id="'+r.id+'" style="background:#7f1d1d">Hancurkan</button>')+'</div></div>'}).join('');
@@ -717,7 +748,10 @@ async function adminTab(){const b=$('#adb');
   if(!sb||!user||user.role!=='admin'){b.innerHTML='<p class="note">Khusus admin.</p>';return}
   b.innerHTML='<p class="note">Memuat...</p>';
   if(adT===0){const sel=(k,arr)=>'<select class="in" data-k="'+k+'">'+arr.map((n,i)=>'<option value="'+i+'"'+(+CFG[k]===i?' selected':'')+'>'+n+'</option>').join('')+'</select>';
-    b.innerHTML=AF.map(f=>'<label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'">').join('')+'<label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'<div class="sl">MATERI NON-MATEMATIKA (centang = dibuka untuk semua pemain; admin selalu bisa)</div>'+Object.keys(MAPEL).filter(m=>m!=='Matematika').map(m=>'<div class="note" style="margin:8px 0 2px;color:#f472b6">'+m+'</div>'+MAPEL[m].map(n=>'<label class="lbl2" style="display:inline-block;margin-right:14px"><input type="checkbox" data-ot="'+esc(n)+'"'+((CFG.openTopics||[]).includes(n)?' checked':'')+'> '+esc(n)+'</label>').join('')).join('')+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
+    b.innerHTML=AF.map(f=>'<label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'">').join('')+'<label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'<div class="sl">MATERI NON-MATEMATIKA (centang = dibuka untuk semua pemain; admin selalu bisa)</div>'+Object.keys(MAPEL).filter(m=>m!=='Matematika').map(m=>'<label class="note" style="display:block;margin:12px 0 2px;color:#f472b6;font-weight:900"><input type="checkbox" data-om="'+esc(m)+'"'+(MAPEL[m].every(n=>(CFG.openTopics||[]).includes(n))?' checked':'')+'> 🔓 '+m+' — buka semua materi mapel ini</label>'+MAPEL[m].map(n=>'<label class="lbl2" style="display:inline-block;margin-right:14px"><input type="checkbox" data-ot="'+esc(n)+'"'+((CFG.openTopics||[]).includes(n)?' checked':'')+'> '+esc(n)+'</label>').join('')).join('')+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
+    const omSync=()=>b.querySelectorAll('[data-om]').forEach(x=>{x.checked=MAPEL[x.dataset.om].every(n=>{const c=[...b.querySelectorAll('[data-ot]')].find(y=>y.dataset.ot===n);return c&&c.checked})});
+    b.querySelectorAll('[data-om]').forEach(x=>x.onchange=()=>{const set=new Set(MAPEL[x.dataset.om]);b.querySelectorAll('[data-ot]').forEach(y=>{if(set.has(y.dataset.ot))y.checked=x.checked})});
+    b.querySelectorAll('[data-ot]').forEach(y=>y.onchange=omSync);
     $('#adsv').onclick=async()=>{b.querySelectorAll('[data-k]').forEach(x=>{const k=x.dataset.k;CFG[k]=(x.type==='number'||x.tagName==='SELECT')?Number(x.value):x.value});
       CFG.difMul=String(CFG.difMul).split(',').map(Number);CFG.openTopics=[...b.querySelectorAll('[data-ot]')].filter(x=>x.checked).map(x=>x.dataset.ot);applyCfg();drawMat();applySet();const{error}=await sb.from('app_settings').upsert({key:'config',value:CFG});$('#adm0').textContent=error?'Gagal: '+error.message:'Tersimpan ✓ (berlaku untuk semua pemain)'}}
   else if(adT===1){const{data}=await sb.from('profiles').select('id,username,nickname,role,coins').order('username');
@@ -730,14 +764,21 @@ else if(adT===2){const{data}=await sb.from('scores').select('id,username,score,m
     b.querySelectorAll('[data-id]').forEach(x=>x.onclick=async()=>{await sb.from('scores').delete().eq('id',x.dataset.id);adminTab()});
     $('#dall').onclick=async()=>{if(confirm('Hapus semua skor leaderboard?')){await sb.from('scores').delete().gte('id',0);adminTab()}}}
   else if(adT===4){const{data}=await sb.from('ship_designs').select('id,name,blocks,price,active').eq('is_catalog',true).order('id');
-    b.innerHTML='<div class="sl">PESAWAT TOKO RESMI</div>'+((data||[]).map(r=>'<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.name)+'<small>Harga <input class="in" style="width:90px;margin:4px 0 0" type="number" data-p="'+r.id+'" value="'+(r.price||0)+'"> <label><input type="checkbox" data-v="'+r.id+'"'+(r.active?' checked':'')+'> aktif</label><br>Kelangkaan <select class="in" style="width:auto;margin:4px 0 0" data-rr="'+r.id+'">'+RAR.map((n,i)=>'<option value="'+i+'"'+(rarOf(r.id,true,r.price)===i?' selected':'')+'>'+n+'</option>').join('')+'</select></small></div><div class="acts"><button class="sm" data-sv="'+r.id+'">Simpan</button></div></div>').join('')||'<p class="note">Belum ada produk.</p>')+'<div class="sl">TAMBAH PESAWAT BARU (batas 81 blok)</div><div id="aded"></div>';
+    b.innerHTML='<div class="sl">PESAWAT TOKO RESMI</div>'+((data||[]).map(r=>'<div class="it"><canvas width="64" height="64" data-b="'+r.id+'"></canvas><div class="inf">'+esc(r.name)+'<small>Harga <input class="in" style="width:90px;margin:4px 0 0" type="number" data-p="'+r.id+'" value="'+(r.price||0)+'"> <label><input type="checkbox" data-v="'+r.id+'"'+(r.active?' checked':'')+'> aktif</label><br>Kelangkaan <select class="in" style="width:auto;margin:4px 0 0" data-rr="'+r.id+'">'+RAR.map((n,i)=>'<option value="'+i+'"'+(rarOf(r.id,true,r.price)===i?' selected':'')+'>'+n+'</option>').join('')+'</select></small></div><div class="acts"><button class="sm" data-sv="'+r.id+'">Simpan</button></div></div>').join('')||'<p class="note">Belum ada produk.</p>')+'<div class="sl">📦 PAKET PESAWAT SWALLOWED STAR</div><p class="note">Menambahkan 17 pesawat baru ke toko lengkap dengan kelangkaannya (yang sudah ada dilewati). Harga dan kelangkaan bisa diubah di atas. Boat of Mausoleum (Original Exclusive) ditambahkan dalam keadaan nonaktif.</p><button class="bt" id="seedss">TAMBAHKAN 17 PESAWAT KE TOKO</button><div class="sl">PESAWAT BUATAN PEMAIN (rating ulang admin)</div><p class="note">Pesawat custom bawaannya berkelangkaan Special. Ubah di sini untuk memberi rating ulang.</p><div id="cuslist" class="wg"></div><div class="sl">TAMBAH PESAWAT BARU (batas 81 blok)</div><div id="aded"></div>';
     (data||[]).forEach(r=>drawPrev(b.querySelector('[data-b="'+r.id+'"]'),r.blocks,0));
+    $('#seedss').onclick=async()=>{const bt=$('#seedss');bt.disabled=true;bt.textContent='Memproses...';const ex=(await sb.from('ship_designs').select('name').eq('is_catalog',true)).data||[],have=new Set(ex.map(x=>x.name));let n=0;CFG.rar=CFG.rar||{};
+      for(const q of SSHIPS){if(have.has(q.n))continue;const r=await sb.from('ship_designs').insert({name:q.n,blocks:mkBlocks(q.a),is_catalog:true,price:q.p,active:q.act!==false,creator_name:'Toko Resmi'}).select('id').single();if(r.error){alert('Gagal pada '+q.n+': '+r.error.message);break}CFG.rar[r.data.id]=q.r;n++}
+      const e=(await sb.from('app_settings').upsert({key:'config',value:CFG})).error;alert(e?'Gagal menyimpan rating: '+e.message:'Selesai: '+n+' pesawat ditambahkan.');adminTab()};
+    sb.from('ship_designs').select('id,name,blocks,creator_name').eq('is_catalog',false).neq('id',1).order('id',{ascending:false}).limit(60).then(r=>{const c=$('#cuslist');if(!c)return;const d=r.data||[];
+      c.innerHTML=d.map(x=>'<div class="it"><canvas width="64" height="64" data-c="'+x.id+'"></canvas><div class="inf">'+esc(x.name)+'<small>Desainer: '+esc(x.creator_name||'?')+'<br>Kelangkaan <select class="in" style="width:auto;margin:4px 0 0" data-cr="'+x.id+'">'+RAR.map((n,i)=>'<option value="'+i+'"'+(rarOf(x.id,false,0)===i?' selected':'')+'>'+n+(i===2?' (bawaan)':'')+'</option>').join('')+'</select></small></div><div class="acts"><button class="sm" data-cs="'+x.id+'">Simpan</button></div></div>').join('')||'<p class="note">Belum ada pesawat buatan pemain.</p>';
+      d.forEach(x=>drawPrev(c.querySelector('[data-c="'+x.id+'"]'),x.blocks,0));
+      c.querySelectorAll('[data-cs]').forEach(bn=>bn.onclick=async()=>{const id=bn.dataset.cs;CFG.rar=CFG.rar||{};CFG.rar[id]=+c.querySelector('[data-cr="'+id+'"]').value;const e=(await sb.from('app_settings').upsert({key:'config',value:CFG})).error;bn.textContent=e?'Gagal':'✓'})});
     b.querySelectorAll('[data-sv]').forEach(x=>x.onclick=async()=>{const id=x.dataset.sv,price=+b.querySelector('[data-p="'+id+'"]').value,active=b.querySelector('[data-v="'+id+'"]').checked;CFG.rar=CFG.rar||{};CFG.rar[id]=+b.querySelector('[data-rr="'+id+'"]').value;const r1=await sb.from('ship_designs').update({price,active}).eq('id',id),r2=await sb.from('app_settings').upsert({key:'config',value:CFG}),error=r1.error||r2.error;x.textContent=error?'Gagal':'✓';if(error)alert('Gagal menyimpan: '+error.message)});
     renderEditor($('#aded'),{max:81,label:'TAMBAH KE TOKO',extra:'<input class="in" id="epr" type="number" placeholder="Harga (koin)">',onSave:async(n,bl)=>{const pr=+$('#epr').value;if(!n||!(pr>=0)||bl.length<3){alert('Isi nama, harga, dan minimal 3 blok.');return}const{error}=await sb.from('ship_designs').insert({name:n,blocks:bl,is_catalog:true,price:pr,creator_name:'Toko Resmi'});if(error)alert(error.message);else adminTab()}})}
   else if(adT===5){const sec=t=>'<div class="sl">'+t+'</div>',inp=(k,i,v,lb)=>'<label class="lbl2">'+lb+'</label><input class="in" type="number" step="any" min="0" data-pk="'+k+'" data-pi="'+i+'" value="'+v+'">';
     b.innerHTML='<p class="note">Atur harga dan pengali. Berlaku untuk semua pemain setelah disimpan.</p>'
      +sec('🛒 ITEM PENDUKUNG')+ITM.slice(0,10).map((x,i)=>inp('itemPrice',i,CFG.itemPrice[i],x.e+' '+x.n)).join('')+inp('gktPrice','',CFG.gktPrice,'🏰 God Kingdom Teleportation')+inp('manaPrice','',CFG.manaPrice,'🧴 Bottle of Mana')
-     +sec('🔧 SERVIS PESAWAT')+[1,2,3,4,5].map(n=>inp('svcPrice',n-1,CFG.svcPrice[n-1],'Part of Service Lv '+n)).join('')+inp('guardPrice','',CFG.guardPrice,'🛡 Guard of Spaceship')+inp('potionPrice','',CFG.potionPrice,'🧪 Potion of Passive')
+     +sec('🔧 SERVIS PESAWAT')+[1,2,3,4,5].map(n=>inp('svcPrice',n-1,CFG.svcPrice[n-1],'Part of Service Lv '+n)).join('')+inp('guardPrice','',CFG.guardPrice,'🛡 Guard of Spaceship')+inp('potionPrice','',CFG.potionPrice,'🧪 Potion of Passive')+inp('prsPrice','',CFG.prsPrice,'📜 PRS (Permit to Repair a Spacecraft)')+inp('prsPot','',CFG.prsPot,'Jumlah Potion of Passive per pemasangan pasif')+sec('🧩 MAKSIMAL PASIF PER KELANGKAAN (tidak bisa ditambah lebih dari ini)')+RAR.map((n,i)=>inp('pasMax',i,CFG.pasMax[i],n)).join('')
      +sec('💍 SPACE RING (harga per kapasitas)')+CFG.ringPrices.map((v,i)=>inp('ringPrices',i,v,'Kapasitas '+(i+2))).join('')
      +sec('🅿 SLOT GARASI')+CFG.slotPrices.map((v,i)=>inp('slotPrices',i,v,'Slot ke-'+(i+4))).join('')
      +sec('🔫 TEMBAKAN')+FX.map((n,i)=>inp('fxPrice',i,CFG.fxPrice[i],'Beli '+n)).join('')+FX.map((n,i)=>inp('fxUpPrice',i,CFG.fxUpPrice[i],'Upgrade '+n+' (× level saat ini)')).join('')
@@ -809,7 +850,7 @@ const ITM=[{n:'Ancient God Eye',e:'👁️',d:'Memperlihatkan 10 soal yang belum
 {n:'Chaotic Golden Wings',e:'🪶',d:'Melindungi pemain 12 detik dan memperlambat semua batu meteor (slow motion).'},
 {n:'God Kingdom Teleportation',e:'🏰',d:'Teleportasi: langsung mengusir 1 ancaman luar (Black Hole / Space Beast / Sector Beast) yang sedang menyerang. Tidak terpakai jika tidak ada ancaman.'}];
 const own=i=>i===10?(X.gkt||0):((user&&user.items[i])||0),iprice=i=>i===10?CFG.gktPrice:CFG.itemPrice[i];
-const REG=['Primeval Star','Sektor Bintang','Black Dragon Mountain','Medan Perang ke-7','Original Universe','Universe Ocean','Purple Moon Holy Land Universe','Continent of Origin','Land of Darkness Home of Sector Beasts','World of Jin'],REGC=['#22c55e','#38bdf8','#ef4444','#f97316','#a855f7','#0ea5e9','#d946ef','#eab308','#9ca3af','#f43f5e'];
+const REG=['Primeval Star','Sektor Bintang','Black Dragon Mountain','Medan Perang ke-7','Original Universe','Universe Ocean','Purple Moon Holy Land Universe','East Emperor Holy Land','Land of Darkness Home of Sector Beasts','Continent of Origin','World of Jin'],REGC=['#22c55e','#38bdf8','#ef4444','#f97316','#a855f7','#0ea5e9','#d946ef','#14b8a6','#9ca3af','#eab308','#f43f5e'];
 const RT=[
 {a:'#22c55e',b:'#052e16',k:'#3f6212',s:'#bef264',m:'pollen',t:'Hutan purba yang sunyi... jangan lengah.'},
 {a:'#38bdf8',b:'#06203d',k:'#334155',s:'#7dd3fc',m:'star',t:'Bintang berkelip, asteroid mulai rapat.'},
@@ -818,10 +859,11 @@ const RT=[
 {a:'#a855f7',b:'#1e0a3d',k:'#4c1d95',s:'#c4b5fd',m:'neb',t:'Kabut nebula menyelimuti angkasa.'},
 {a:'#06b6d4',b:'#042f3d',k:'#155e75',s:'#67e8f9',m:'sea',t:'Arus samudra semesta menenggelamkan fokus.'},
 {a:'#d946ef',b:'#2e0a3a',k:'#701a75',s:'#f5d0fe',m:'moon',t:'Bulan ungu suci mengawasi setiap tembakan.'},
-{a:'#eab308',b:'#33270a',k:'#713f12',s:'#fde047',m:'gold',t:'Cahaya emas benua asal menyilaukan.'},
+{a:'#14b8a6',b:'#04201c',k:'#134e4a',s:'#5eead4',m:'jade',t:'Tanah suci Kaisar Timur bersinar giok. Satu kesalahan, takhta menolakmu.'},
 {a:'#9ca3af',b:'#030308',k:'#18181b',s:'#7f1d1d',m:'dark',t:'Kegelapan pekat. Sector Beast mengintai di balik bayang-bayang.'},
+{a:'#eab308',b:'#33270a',k:'#713f12',s:'#fde047',m:'gold',t:'Cahaya emas benua asal menyilaukan.'},
 {a:'#f43f5e',b:'#2d0610',k:'#1c1917',s:'#fb7185',m:'jin',t:'Murka dunia Jin. Satu nyawa bisa jadi penentu.'}];
-const AMB={pollen:['#bef264',-1,.00004,'dot'],star:['#bae6fd',0,0,'twk'],ember:['#fb923c',-1,.00012,'sq'],war:['#fdba74',1,.0007,'str'],neb:['#c4b5fd',-1,.00002,'dot'],sea:['#67e8f9',-1,.00008,'bub'],moon:['#f5d0fe',1,.00003,'twk'],gold:['#fde68a',1,.00005,'dot'],jin:['#fb7185',1,.0001,'sq'],dark:['#ef4444',0,0,'eye']};
+const AMB={pollen:['#bef264',-1,.00004,'dot'],star:['#bae6fd',0,0,'twk'],ember:['#fb923c',-1,.00012,'sq'],war:['#fdba74',1,.0007,'str'],neb:['#c4b5fd',-1,.00002,'dot'],sea:['#67e8f9',-1,.00008,'bub'],moon:['#f5d0fe',1,.00003,'twk'],gold:['#fde68a',1,.00005,'dot'],jade:['#5eead4',-1,.00006,'bub'],jin:['#fb7185',1,.0001,'sq'],dark:['#ef4444',0,0,'eye']};
 let rbT=0;
 function regionFx(){const g=$('#game'),b=$('#rbn');clearTimeout(rbT);
   if(hunt){const R=RT[hunt.r];g.dataset.reg=hunt.r;g.style.setProperty('--ra',R.a);g.style.setProperty('--rb',R.b);b.style.setProperty('--ra',R.a);
@@ -859,7 +901,7 @@ function prep(){if(hunt)mode=1;if(!user){hunt=null;begin();return}
   paint();
   $('#itgo').onclick=()=>{const o={};Object.keys(sel).forEach(k=>{if(sel[k]>0)o[k]=sel[k]});$('#itm').classList.remove('on');begin(Object.keys(o).length?o:null)};
   $('#itm').classList.add('on')}
-function nextLv(){if(!hunt)return;let r=hunt.r,l=hunt.l+1;if(l>100){r++;l=1}if(r>9){alert('Kamu sudah menamatkan semua wilayah!');return}hunt={r,l,target:HT(r,l)};prep()}
+function nextLv(){if(!hunt)return;let r=hunt.r,l=hunt.l+1;if(l>100){r++;l=1}if(r>=REG.length){alert('Kamu sudah menamatkan semua wilayah!');return}hunt={r,l,target:HT(r,l)};prep()}
 const fillQ=l=>{while(l.qu.length<10)l.qu.push(makeQ())};
 function eyeUpd(l){const p=l.el.querySelector('.eye');if(l.eye>0){p.style.display='block';p.innerHTML='👁 SOAL BERIKUT<br>'+l.qu.slice(0,10).map((q,i)=>(i+1)+'. '+q.q.replace(/ = \?$/,'')).join('<br>')}else p.style.display='none'}
 function spawnStar(l,w){const q=makeQ(),r=Math.min(w*.3,100);l.ast.push({t:q.q.replace(/ = \?$/,''),a:q.a,r,x:w/2,y:r*.6,type:'star',sd:3})}
