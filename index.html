@@ -309,7 +309,7 @@ function applyCfg(){CFG.time=Math.max(30,+CFG.time||300);CFG.lives=Math.min(10,M
   if(!Array.isArray(CFG.fxPrice))CFG.fxPrice=String(CFG.fxPrice).split(',');CFG.fxPrice=[0,1,2,3,4,5].map(i=>Math.max(0,Math.round(+CFG.fxPrice[i])||0));CFG.fxPrice[0]=0;
   if(!Array.isArray(CFG.difMul))CFG.difMul=String(CFG.difMul).split(',');CFG.difMul=[0,1,2,3].map(i=>{const v=parseFloat(CFG.difMul[i]);return v>0?Math.min(v,10):[1,1.5,2,3][i]});
   $$('#diff button').forEach((b,i)=>{const n=['MUDAH','SEDANG','SULIT','EXTREME'][i],m=CFG.difMul[i];b.textContent=n+(m!==1?' ×'+m:'')});
-  const D={coinRate:.5,marketFee:.05,engineBase:150,blockPrice:200,blockStep:8};for(const k in D)CFG[k]=isNaN(parseFloat(CFG[k]))?D[k]:+CFG[k];CFG.blockStep=Math.max(1,Math.round(CFG.blockStep));
+  const D={coinPerHit:1,coinRate:.5,marketFee:.05,engineBase:150,blockPrice:200,blockStep:8};for(const k in D)CFG[k]=isNaN(parseFloat(CFG[k]))?D[k]:+CFG[k];CFG.blockStep=Math.max(1,Math.round(CFG.blockStep));
   $('#ttl').textContent=CFG.title;$('#ft').textContent=CFG.footer;bgmSync()}
 async function loadCfg(){if(!sb)return;try{
   const c=await sb.from('app_settings').select('value').eq('key','config').maybeSingle();if(c.data&&c.data.value)Object.assign(CFG,c.data.value);
@@ -375,7 +375,7 @@ async function showLb(){$('#lb').classList.add('on');
   o.innerHTML=data.length?'<table class="tb2"><tr><th>#</th><th>Pemain</th><th>Skor</th><th>Mode · Level</th></tr>'+data.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.username)+'</td><td>'+r.score+'</td><td>'+({1:'Sendiri',2:'Duel',4:'Quad'}[r.mode]||r.mode)+' · '+(['Mudah','Sedang','Sulit','Extreme'][r.level]||'')+'</td></tr>').join('')+'</table>':'<p class="note">Belum ada skor untuk filter ini.</p>'}
 async function saveScore(){const w=$('#wsave');w.textContent='';if(!sb||!L[0])return;
   if(!user){w.textContent='Masuk ke akun untuk menyimpan skor dan mendapat koin.';return}
-  const r=await sb.rpc('submit_score',{p_score:L[0].score,p_mode:mode,p_level:dif});
+  const r=await sb.rpc('submit_score',{p_score:L[0].score,p_mode:mode,p_level:dif,p_hits:L[0].hits||0});
   if(r.error){w.textContent='Skor gagal disimpan: '+r.error.message;return}
   w.textContent='Skor tersimpan ✓  +'+r.data.earned+' koin (total 🪙'+r.data.coins+')';refreshMe()}
 const PAL=['#f8fafc','#ef4444','#f59e0b','#22c55e','#38bdf8','#6366f1','#ec4899','#64748b'];
@@ -438,7 +438,7 @@ async function renderShop(){mkTabs($('#shopt'),['Toko Resmi','Pasar Pemain'],sho
     data.forEach(r=>drawPrev(o.querySelector('[data-b="'+r.id+'"]'),r.design.blocks,r.engine_lv));
     o.querySelectorAll('[data-id]').forEach(x=>x.onclick=async()=>{if(await rpc('buy_ship',{p_inv:+x.dataset.id})){await refreshMe();alert('Berhasil dibeli! Pesawat ada di Space Garage.');renderShop()}})}}
 const needLogin=()=>{if(!sb||!user){alert('Masuk dulu ke akunmu untuk membuka fitur ini.');return true}return false};
-const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number'],['coinRate','Koin per poin skor (x)','number'],['marketFee','Potongan pasar pemain (0–1, mis. 0.05 = 5%)','number'],['engineBase','Harga dasar upgrade mesin','number'],['blockPrice','Harga dasar tambah blok','number'],['blockStep','Jumlah blok per pembelian','number'],['difMul','Pengali skor per kesulitan (4 angka dipisah koma: Mudah,Sedang,Sulit,Extreme)','text'],['fxPrice','Harga tembakan (6 angka dipisah koma: Laser,Plasma,Petir,Api,Komet,Pelangi)','text']];
+const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number'],['coinPerHit','Koin per tembakan benar (bawaan 1)','number'],['marketFee','Potongan pasar pemain (0–1, mis. 0.05 = 5%)','number'],['engineBase','Harga dasar upgrade mesin','number'],['blockPrice','Harga dasar tambah blok','number'],['blockStep','Jumlah blok per pembelian','number'],['difMul','Pengali skor per kesulitan (4 angka dipisah koma: Mudah,Sedang,Sulit,Extreme)','text'],['fxPrice','Harga tembakan (6 angka dipisah koma: Laser,Plasma,Petir,Api,Komet,Pelangi)','text']];
 function renderAdminTabs(){const t=$('#adt');t.innerHTML='';
   ['Game','Pengguna','Skor','Soal','Toko'].forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.className=i===adT?'s':'';b.onclick=()=>{adT=i;renderAdminTabs()};t.appendChild(b)});adminTab()}
 async function adminTab(){const b=$('#adb');
@@ -506,7 +506,7 @@ function press(l,k){if(over||paused||!l.alive)return;
 function shoot(l){if(!l.buf)return;const v=+l.buf;let t=null;l.ast.forEach(a=>{if(a.a===v&&(!t||a.y>t.y))t=a});l.buf='';
   if(!t){setWait(l,'SALAH!','bad');beep(150,.3,'sawtooth',.08);setTimeout(()=>{if(!l.buf)showBuf(l)},600);return}
   l.lz.push({x0:l.cv.width/2,y0:l.cv.height*.62,x1:t.x,y1:t.y,l:1,c:COLS[l.i],f:l.i===0?fx():0});
-  kill(l,t,true);beep(900,.15,'square',.07,300);showBuf(l)}
+  l.hits=(l.hits||0)+1;kill(l,t,true);beep(900,.15,'square',.07,300);showBuf(l)}
 function kill(l,a,pts){l.ast=l.ast.filter(x=>x!==a);
   for(let k=0;k<(S.light?4:18);k++){const an=Math.random()*6.28,s=Math.random()*3+1;l.pt.push({x:a.x,y:a.y,vx:Math.cos(an)*s,vy:Math.sin(an)*s,l:1})}
   if(!pts)return;l.score+=Math.round(CFG.points*(CFG.difMul[dif]||1));l.el.querySelector('.sc').textContent=l.score;
