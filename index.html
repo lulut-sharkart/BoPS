@@ -296,15 +296,17 @@ async function loadCfg(){if(!sb)return;try{
   const q=await sb.from('questions').select('question,answer');if(q.data)dbQ=q.data.map(r=>[r.question,Number(r.answer)])}catch(e){}
   applyCfg();drawMat();applySet()}
 async function setUser(session){
-  if(!session){user=null}else{const u=session.user;let name=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],role='user';
-    try{let r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle();if(!r.data&&!r.error){await sb.from('profiles').insert({id:u.id,username:name});r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle()}if(r.data){name=r.data.username;role=r.data.role}else if(r.error)console.warn('Profil gagal dibaca:',r.error.message)}catch(e){}
-    user={id:u.id,email:u.email,name,role}}
+  if(!session){user=null}else{const u=session.user;let name=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],role='user',dbg='';
+    try{let r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle();if(!r.data&&!r.error){const ins=await sb.from('profiles').insert({id:u.id,username:name});if(ins.error)dbg='gagal membuat profil: '+ins.error.message;r=await sb.from('profiles').select('username,role').eq('id',u.id).maybeSingle()}if(r.data){name=r.data.username;role=r.data.role}else dbg=dbg||(r.error&&r.error.message)||'baris profil tidak ada'}catch(e){dbg=String(e&&e.message||e)}
+    user={id:u.id,email:u.email,name,role,dbg}}
   $('#acc').textContent=user?'👤 '+user.name:'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin')}
 if(sb){sb.auth.getSession().then(r=>setUser(r.data.session));sb.auth.onAuthStateChange((_e,s)=>{setTimeout(()=>setUser(s),0)})}
 function renderAuth(msg){const b=$('#authb');
   if(!sb){b.innerHTML='<h2>👤 AKUN</h2><p class="note">Supabase belum dikonfigurasi. Isi SB_URL dan SB_KEY di bagian atas script index.html.</p><button class="cl">TUTUP</button>';return}
-  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>'+esc(user.email)+(user.role==='admin'?' • ADMIN':'')+'</small></span></div><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
-    $('#lo').onclick=async()=>{await sb.auth.signOut();$('#auth').classList.remove('on')};return}
+  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>'+esc(user.email)+' • Peran: '+esc(user.role)+'</small></span></div>'+(user.dbg?'<p class="note">Diagnosa: '+esc(user.dbg)+'</p>':'')+(user.role==='admin'?'<button class="bt" id="goadm" style="background:#059669">🛠 BUKA PANEL ADMIN</button>':'')+'<button class="bt" id="rl" style="background:#334155">MUAT ULANG PERAN</button><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
+    $('#lo').onclick=async()=>{await sb.auth.signOut();$('#auth').classList.remove('on')};
+    $('#rl').onclick=async()=>{const r=await sb.auth.getSession();await setUser(r.data.session);renderAuth()};
+    const ga=$('#goadm');if(ga)ga.onclick=()=>{$('#auth').classList.remove('on');$('#admin').classList.add('on');renderAdminTabs()};return}
   const up=authTab==='up';
   b.innerHTML='<h2>👤 AKUN</h2><div class="tabs"><button data-t="in" class="'+(up?'':'s')+'">MASUK</button><button data-t="up" class="'+(up?'s':'')+'">DAFTAR</button></div>'+(up?'<input class="in" id="au" placeholder="Username" maxlength="20">':'')+'<input class="in" id="ae" type="email" placeholder="Email"><input class="in" id="ap" type="password" placeholder="Password (min. 6 karakter)"><p class="note" id="am">'+esc(msg||'')+'</p><button class="bt" id="ago">'+(up?'DAFTAR':'MASUK')+'</button><button class="cl">TUTUP</button>';
   b.querySelectorAll('.tabs button').forEach(x=>x.onclick=()=>{authTab=x.dataset.t;renderAuth()});
