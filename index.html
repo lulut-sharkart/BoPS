@@ -184,6 +184,18 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 .wg>.it{margin-bottom:0}.wg>:not(.it){grid-column:1/-1}
 #regb .lvg{grid-template-columns:repeat(auto-fill,minmax(46px,1fr))}
 .mdf{display:inline-block;font-size:.55em;font-weight:900;color:#000;background:#f59e0b;border-radius:6px;padding:2px 8px;vertical-align:middle;letter-spacing:.5px}
+.modal .sbox.wide2{width:min(980px,100%)!important}
+.adg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:0 12px;align-items:start}
+.adg>:not(.fld):not(.it):not(.row){grid-column:1/-1}
+.adg>.it,.adg>.row{margin-bottom:8px}
+.tpg{display:flex;flex-wrap:wrap;gap:2px 14px}
+.acc2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;align-items:start}
+.shv{display:flex;align-items:center;gap:14px;background:#1e293b;border-radius:12px;padding:12px;margin-bottom:8px}
+.shv small{display:block;color:#94a3b8;font-size:.62rem;font-weight:500;margin-top:4px;line-height:1.5}
+.pas{background:#1e293b;border-radius:10px;padding:9px 12px;margin-bottom:6px;font-size:.78rem}
+.pas small{display:block;color:#94a3b8;font-size:.6rem;font-weight:500;margin-top:3px;line-height:1.5}
+.uidb{display:inline-flex;align-items:center;gap:6px;margin-top:4px}
+.uidb b{font-family:Orbitron,monospace;letter-spacing:1px;color:#fbbf24}
 </style>
 </head>
 <body>
@@ -191,7 +203,7 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 <canvas id="stars"></canvas>
 
 <section id="menu" class="screen on">
-  <div id="tl"><button class="ib" id="acc">👤 Masuk</button></div><div id="tr"><button class="ib" id="more" aria-label="Menu" aria-expanded="false">⋮</button><div id="mnu"><button class="mi" id="lbb"><i>🏆</i><span>Leaderboard</span></button><button class="mi" id="adm" hidden><i>🛠</i><span>Panel Admin</span></button><button class="mi" id="mus"><i>🔊</i><span>Musik</span></button><button class="mi" id="fsb"><i>⛶</i><span>Layar Penuh</span></button><button class="mi" id="gear"><i>⚙</i><span>Pengaturan</span></button></div></div>
+  <div id="tl"><button class="ib" id="acc">👤 Masuk</button></div><div id="tr"><button class="ib" id="more" aria-label="Menu" aria-expanded="false">⋮</button><div id="mnu"><button class="mi" id="lbb"><i>🏆</i><span>Leaderboard</span></button><button class="mi" id="frm"><i>👥</i><span>Teman</span></button><button class="mi" id="adm" hidden><i>🛠</i><span>Panel Admin</span></button><button class="mi" id="mus"><i>🔊</i><span>Musik</span></button><button class="mi" id="fsb"><i>⛶</i><span>Layar Penuh</span></button><button class="mi" id="gear"><i>⚙</i><span>Pengaturan</span></button></div></div>
   <div class="logo"><i>🚀</i><h1 id="ttl">BATTLE OF<br>PRIMAL SPACE</h1></div>
   <div class="tag">DUEL BELAJAR</div>
   <div class="card">
@@ -249,14 +261,16 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
   </div>
 </div>
 <div id="auth" class="modal"><div class="sbox" id="authb"></div></div>
-<div id="lb" class="modal"><div class="sbox"><h2>🏆 LEADERBOARD</h2><div class="tabs" id="lbt"></div><div class="tabs" id="lbt2"></div><div id="lbl"></div><button class="cl">TUTUP</button></div></div>
-<div id="admin" class="modal"><div class="sbox" style="width:min(640px,100%)"><h2>🛠 PANEL ADMIN</h2><div class="tabs" id="adt"></div><div id="adb"></div><button class="cl">TUTUP</button></div></div>
+<div id="lb" class="modal"><div class="sbox wide2"><h2>🏆 LEADERBOARD</h2><div class="tabs" id="lbt"></div><div class="tabs" id="lbt2"></div><div id="lbl"></div><button class="cl">TUTUP</button></div></div>
+<div id="admin" class="modal"><div class="sbox wide"><h2>🛠 PANEL ADMIN</h2><div class="tabs" id="adt"></div><div id="adb" class="adg"></div><button class="cl">TUTUP</button></div></div>
 <div id="gar" class="modal"><div class="sbox wide"><h2>🚀 SPACESHIP GARAGE</h2><div class="tabs" id="gart"></div><div id="garb" class="wg"></div><button class="cl">TUTUP</button></div></div>
 <div id="shop" class="modal"><div class="sbox wide"><h2>🛒 SPACE STORE</h2><div class="tabs" id="shopt"></div><div id="shopb" class="wg"></div><button class="cl">TUTUP</button></div></div>
 <div id="reg" class="modal"><div class="sbox wide"><h2>🌌 WILAYAH PERBURUAN</h2><div id="regb" class="wg"></div><button class="cl">TUTUP</button></div></div>
 <div id="itm" class="modal" style="z-index:25"><div class="sbox wide"><h2>🎒 BAWA ITEM?</h2><p class="note" id="itnote"></p><div id="itml" class="wg"></div><button class="bt" id="itgo" style="background:#10b981">🚀 MULAI DENGAN ITEM</button><button class="bt" id="itn" style="background:#334155">TANPA ITEM</button></div></div>
 <div id="exit" class="modal" style="z-index:30"><div class="sbox"><h2>⚠ KELUAR DARI GAME?</h2><p class="note">Permainan yang sedang berjalan akan dihentikan dan <b>datanya tidak disimpan</b> (skor dan koin tidak dihitung).</p><button class="bt" id="xstay" style="background:#10b981">LANJUT BERMAIN</button><button class="bt" id="xgo" style="background:#be123c">KELUAR</button></div></div>
 <div id="ins" class="modal" style="z-index:35"><div class="sbox"><h2>💥 PESAWAT MELEDAK</h2><p class="note" id="insn"></p><button class="bt" id="insy" style="background:#10b981">✅ KLAIM ASURANSI</button><button class="bt" id="insx" style="background:#334155">TIDAK KLAIM</button></div></div>
+<div id="fr" class="modal" style="z-index:26"><div class="sbox wide"><h2>👥 TEMAN</h2><div class="tabs" id="frt"></div><div id="frb" class="wg"></div><button class="cl">TUTUP</button></div></div>
+<div id="pf" class="modal" style="z-index:27"><div class="sbox wide2"><h2>👤 PROFIL PEMAIN</h2><div id="pfb"></div><button class="cl">TUTUP</button></div></div>
 <div id="stat" class="modal" style="z-index:28"><div class="sbox" style="width:min(460px,100%)"><h2 id="statt"></h2><div id="statb"></div><button class="cl">TUTUP</button></div></div>
 <div id="ytw"><div id="ytp"></div></div>
 <footer id="ft">Developer: SharkArt.evo Education</footer>
@@ -280,7 +294,7 @@ const save=()=>{try{localStorage.setItem('bps',JSON.stringify(S))}catch(e){}};
 const XD=()=>({ships:{},svc:[0,0,0,0,0],grd:0,pot:0,prs:0,spent:0,mana:0,gkt:0,ringX:0});let X=XD();
 const XK=()=>'bpsx_'+(user?user.id:'x');
 function xl(){try{X=Object.assign(XD(),JSON.parse(localStorage.getItem(XK())||'{}'))}catch(e){X=XD()}}
-const xs=()=>{try{localStorage.setItem(XK(),JSON.stringify(X))}catch(e){}};
+const xs=()=>{try{localStorage.setItem(XK(),JSON.stringify(X))}catch(e){}pubSync()};
 const wal=()=>Math.max(0,(user?user.coins:0)-X.spent);
 let SVCP=[10,20,30,40,50],GRDP=500,POTP=800;const PLMAX=()=>Math.max(1,Math.round(+CFG.plMax)||10),plvR=(rec,p)=>Math.min(PLMAX(),Math.max(1,(rec&&rec.pl&&+rec.pl[p])||1)),pm=lv=>1+.3*(lv-1),cdm=lv=>Math.max(.35,1-.08*(lv-1));
 const cdv=(b,st,lv)=>Math.max(3,b-st*(lv-1)),PV={gold:lv=>({hp:.25+.03*(lv-1)}),wood:lv=>({dur:10+(lv-1),cd:cdv(20,1,lv)}),water:lv=>({pct:2+.5*(lv-1)}),fire:lv=>({bonus:75+10*(lv-1),dur:5+.5*(lv-1),cd:cdv(15,1,lv)}),earth:lv=>({pct:25+5*(lv-1)}),wind:lv=>({cd:cdv(20,1,lv)}),light:lv=>({sh:2+.5*(lv-1),cd:cdv(20,1,lv)}),thunder:lv=>({dur:15+(lv-1),cd:cdv(30,2,lv)})},
@@ -537,15 +551,16 @@ function updateModes(){const tc=canMulti();
   drawMat();if(mode>1&&!canMulti())mode=1;$$('#modes button').forEach(b=>{const n=+b.dataset.n,lock=n>1&&!canMulti();b.disabled=lock;b.style.opacity=lock?.5:1;b.classList.toggle('s',n===mode);const k=b.querySelector('.lk');if(k)k.style.display=lock?'block':'none'})}
 async function rpc(fn,args){const{data,error}=await sb.rpc(fn,args||{});if(error){alert(error.message);return null}return data==null?true:data}
 const PSEL='username,nickname,role,coins,max_blocks,equipped_ship,equipped_fx,owned_fx,fx_lv,notice,items,hunt_progress';
-const getPr=async id=>{let r=await sb.from('profiles').select(PSEL+',ship_slots,ring_lv').eq('id',id).maybeSingle();if(r.error)r=await sb.from('profiles').select(PSEL).eq('id',id).maybeSingle();return r};
-async function setUser(session){
+var pubT=0,pubLast='';
+const getPr=async id=>{let r;for(const sl of [PSEL+',uid,ship_slots,ring_lv',PSEL+',ship_slots,ring_lv',PSEL]){r=await sb.from('profiles').select(sl).eq('id',id).maybeSingle();if(!r.error)return r}return r};
+async function setUser(session){pubLast='';
   if(!session){user=null}else{const u=session.user;try{await sb.rpc('expire_listings')}catch(e){}let nm=(u.user_metadata&&u.user_metadata.username)||(u.email||'').split('@')[0],dbg='',pr=null;
     try{let r=await getPr(u.id);
       if(!r.data&&!r.error){const e=await sb.rpc('ensure_profile',{p_username:nm});if(e.error)dbg='gagal membuat profil: '+e.error.message;r=await getPr(u.id)}
       pr=r.data;if(!pr)dbg=dbg||(r.error&&r.error.message)||'baris profil tidak ada'}catch(e){dbg=String(e&&e.message||e)}
-    user={id:u.id,email:u.email,username:pr?pr.username:nm,nick:(pr&&pr.nickname)||'',name:(pr&&(pr.nickname||pr.username))||nm,role:pr?pr.role:'user',coins:pr?pr.coins:0,maxBlocks:pr?pr.max_blocks:24,eqShip:pr?pr.equipped_ship:null,fxEq:pr?pr.equipped_fx:0,fxOwned:pr?pr.owned_fx:[0],fxLv:(pr&&pr.fx_lv)||{},items:(pr&&pr.items)||{},hp:pr?(pr.hunt_progress||0):0,slots:Math.min(10,Math.max(3,(pr&&pr.ship_slots)||3)),ringLv:Math.min(10,Math.max(1,(pr&&pr.ring_lv)||1)),dbg,ship:null};if(pr&&pr.notice&&pr.notice!==lastNotice){lastNotice=pr.notice;const nt=pr.notice;sb.rpc('clear_notice').then(()=>{});setTimeout(()=>alert(nt),400)}
-    if(user.eqShip){try{const s=await sb.from('ship_inventory').select('engine_lv,design:ship_designs(id,blocks,is_catalog,price)').eq('id',user.eqShip).maybeSingle();if(s.data&&s.data.design)user.ship={blocks:s.data.design.blocks,eng:s.data.engine_lv,id:s.data.design.id,cat:!!s.data.design.is_catalog,price:s.data.design.price||0}}catch(e){}}}
-  xl();$('#acc').textContent=user?'👤 '+user.name+' · 🪙'+wal():'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin');updateModes()}
+    user={id:u.id,email:u.email,username:pr?pr.username:nm,uid:(pr&&pr.uid)||'',nick:(pr&&pr.nickname)||'',name:(pr&&(pr.nickname||pr.username))||nm,role:pr?pr.role:'user',coins:pr?pr.coins:0,maxBlocks:pr?pr.max_blocks:24,eqShip:pr?pr.equipped_ship:null,fxEq:pr?pr.equipped_fx:0,fxOwned:pr?pr.owned_fx:[0],fxLv:(pr&&pr.fx_lv)||{},items:(pr&&pr.items)||{},hp:pr?(pr.hunt_progress||0):0,slots:Math.min(10,Math.max(3,(pr&&pr.ship_slots)||3)),ringLv:Math.min(10,Math.max(1,(pr&&pr.ring_lv)||1)),dbg,ship:null};if(pr&&pr.notice&&pr.notice!==lastNotice){lastNotice=pr.notice;const nt=pr.notice;sb.rpc('clear_notice').then(()=>{});setTimeout(()=>alert(nt),400)}
+    if(user.eqShip){try{const s=await sb.from('ship_inventory').select('engine_lv,design:ship_designs(id,name,blocks,is_catalog,price)').eq('id',user.eqShip).maybeSingle();if(s.data&&s.data.design)user.ship={name:s.data.design.name,blocks:s.data.design.blocks,eng:s.data.engine_lv,id:s.data.design.id,cat:!!s.data.design.is_catalog,price:s.data.design.price||0}}catch(e){}}}
+  xl();$('#acc').textContent=user?'👤 '+user.name+' · 🪙'+wal():'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin');updateModes();pubSync()}
 async function refreshMe(){if(!sb)return;const r=await sb.auth.getSession();await setUser(r.data.session)}
 
 if(sb){sb.auth.getSession().then(r=>setUser(r.data.session));sb.auth.onAuthStateChange((_e,s)=>{setTimeout(()=>setUser(s),0)})}
@@ -560,12 +575,15 @@ async function loadStats(){const o=$('#stt');if(!o||!user)return;
   o.innerHTML='<div class="sg">'+card('Main',n)+card('Terbaik',best)+card('Rata-rata',Math.round(tot/n))+card('Total poin',tot)+'</div><div class="sl">PER MODE</div><table class="tb2"><tr><th>Mode</th><th>Main</th><th>Terbaik</th><th>Rata-rata</th></tr>'+per+'</table><div class="sl">5 PERMAINAN TERAKHIR</div><table class="tb2">'+rc+'</table>'}
 function renderAuth(msg){const b=$('#authb');
   if(!sb){b.innerHTML='<h2>👤 AKUN</h2><p class="note">Supabase belum dikonfigurasi. Isi SB_URL dan SB_KEY di bagian atas script index.html.</p><button class="cl">TUTUP</button>';return}
-  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>@'+esc(user.username)+' • '+ROLE[user.role]+' • 🪙 '+user.coins+'</small></span></div>'
+  b.classList.toggle('wide2',!!(sb&&user));
+  if(user){const sh=ownShip(),rec=shipInfo().rec||{};b.innerHTML='<h2>👤 AKUN</h2><div class="acc2"><div><div class="row"><span>'+esc(user.name)+'<small>@'+esc(user.username)+' • '+ROLE[user.role]+' • 🪙 '+user.coins+'</small>'+(user.uid?'<span class="uidb">UID <b>'+esc(user.uid)+'</b><button class="sm" id="cuid">Salin</button></span>':'')+'</span></div>'
     +(user.dbg?'<p class="note">Diagnosa: '+esc(user.dbg)+'</p>':'')
     +'<label class="lbl2">Nama panggilan (nickname)</label><div style="display:flex;gap:6px"><input class="in" id="nn" maxlength="20" value="'+esc(user.nick)+'" placeholder="Nama panggilan"><button class="sm" id="nns" style="margin-bottom:8px;padding:0 14px">SIMPAN</button></div><p class="note" id="nnm">'+esc(msg||'')+'</p>'
-    +'<div id="stt"><p class="note">Memuat statistik...</p></div>'
+    +'<div id="stt"><p class="note">Memuat statistik...</p></div></div><div><div class="sl">🚀 PESAWAT DIPAKAI</div>'+shipView(sh,rec,'acs')+'</div></div>'
     +(user.role==='admin'?'<button class="bt" id="goadm" style="background:#059669">🛠 BUKA PANEL ADMIN</button>':'')
     +'<button class="bt" id="rl" style="background:#334155">MUAT ULANG DATA</button><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
+    drawShipView('acs',sh);
+    const cu=$('#cuid');if(cu)cu.onclick=()=>{try{navigator.clipboard.writeText(user.uid);cu.textContent='Tersalin ✓'}catch(e){}};
     $('#lo').onclick=async()=>{await sb.auth.signOut();$('#auth').classList.remove('on')};
     $('#rl').onclick=async()=>{await refreshMe();renderAuth()};
     $('#nns').onclick=async()=>{const r=await rpc('set_nickname',{p_name:$('#nn').value.trim()});if(r){await refreshMe();renderAuth('Nama panggilan disimpan ✓')}};
@@ -582,6 +600,44 @@ function renderAuth(msg){const b=$('#authb');
         const{data,error}=await sb.auth.signUp({email:u+'@'+AUTH_DOMAIN,password:p,options:{data:{username:u,nickname:$('#an').value.trim().slice(0,20)}}});if(error)throw error;
         if(data.session)$('#auth').classList.remove('on');else{authTab='in';renderAuth('Akun dibuat. Jika belum bisa masuk, matikan "Confirm email" di Supabase (Authentication > Providers > Email).')}}
     }catch(x){m.textContent=x.message||'Gagal.'}}}
+
+/* ===== sinkron pasif pesawat (tampilan publik), tampilan pesawat, teman & profil ===== */
+function pubSync(){if(!sb||!user)return;clearTimeout(pubT);pubT=setTimeout(async()=>{try{const rec=shipInfo().rec||{},d={pas:rec.pas||null,add:rec.add||[],pl:rec.pl||{},mod:!!rec.mod},j=JSON.stringify(d);if(j===pubLast)return;pubLast=j;const{error}=await sb.rpc('set_pub_ship',{p_data:d});if(error)pubLast=''}catch(e){pubLast=''}},1500)}
+function cleanRec(r){const o={};if(!r||typeof r!=='object')return o;if(ELS.includes(r.pas))o.pas=r.pas;o.add=Array.isArray(r.add)?[...new Set(r.add.filter(e=>ELS.includes(e)))]:[];o.pl={};ELS.forEach(e=>{const v=r.pl&&+r.pl[e];if(v>0)o.pl[e]=Math.min(PLMAX(),Math.round(v))});o.mod=!!r.mod;return o}
+function shipView(sh,rec,cid){const did=sh?sh.did:1,cat=sh?!!sh.cat:false,eng=sh?(sh.eng||0):0,name=sh?sh.name:'Pesawat Awal',r=psList(did,cat,eng,rec||{},sh?sh.price:0),
+  pl=l=>l.map(e=>'<div class="pas"><b>'+PI[e][1]+' '+PI[e][0]+' • Lv '+plvR(rec,e)+'/'+PLMAX()+'</b><small>'+pdesc(e,plvR(rec,e))+'</small></div>').join('');
+  return '<div class="shv"><canvas id="'+cid+'" width="64" height="64" style="width:96px;height:96px;background:#0b1020;border-radius:12px;flex:none"></canvas><div><div style="font-weight:900;font-size:.95rem">'+esc(name||'Pesawat')+(rec&&rec.mod?' <span class="mdf">Modifed</span>':'')+'</div><small>'+(ENM[eng]||'Warp')+' • Mesin Lv '+eng+'/5<br><b style="color:'+RARC[r.rar]+'">'+RAR[r.rar]+'</b> • '+((sh&&sh.blocks)||[]).length+' blok • 💨 '+(100+eng*20+r.rar*10)+' km/dtk</small></div></div>'
+  +'<div class="sl">✨ KEMAMPUAN PASIF</div>'+(r.ps.length?pl(r.ps):'')+(r.lock.length?'<div class="note">🔒 Terbuka di mesin Lv 1:</div>'+pl(r.lock):'')+(!r.ps.length&&!r.lock.length?'<p class="note">Belum ada pasif.</p>':'')}
+const drawShipView=(cid,sh)=>drawPrev(document.getElementById(cid),sh&&sh.blocks,sh?sh.eng:0);
+const ownShip=()=>user&&user.ship?{did:user.ship.id,name:user.ship.name,blocks:user.ship.blocks,eng:user.ship.eng,cat:user.ship.cat,price:user.ship.price}:null;
+const roleOf=r=>ROLE[r]||'Pemain';
+const relBtn=(rel,id)=>rel==='none'?'<button class="sm" data-fadd="'+id+'" style="background:#059669">➕ Tambah Teman</button>':rel==='pending_in'?'<button class="sm" data-fadd="'+id+'" style="background:#059669">✓ Terima Permintaan</button>':rel==='pending_out'?'<button class="sm" disabled>Permintaan terkirim</button>':rel==='friend'?'<button class="sm" disabled>✓ Berteman</button>':'';
+async function openProfile(id){if(needLogin())return;$('#pf').classList.add('on');const o=$('#pfb');o.innerHTML='<p class="note">Memuat...</p>';
+  const p=await rpc('get_player_profile',{p_id:id});if(!p||p===true){o.innerHTML='<p class="note">Profil tidak ditemukan atau fitur belum diaktifkan di database (jalankan SQL fitur pertemanan).</p>';return}
+  const rec=cleanRec(p.rec),sh=p.ship?{did:p.ship.did,name:p.ship.name,blocks:p.ship.blocks,eng:p.ship.eng,cat:p.ship.cat,price:p.ship.price}:null,card=(k,v)=>'<div class="sc2"><b>'+v+'</b><span>'+k+'</span></div>',tot=REG.length*100,hp=Math.min(tot,p.hunt_progress||0),ri=Math.min(REG.length-1,Math.floor(hp/100));
+  o.innerHTML='<div class="acc2"><div><div class="row"><span>'+esc(p.nickname||p.username)+'<small>@'+esc(p.username)+' • '+roleOf(p.role)+'</small><span class="uidb">UID <b>'+esc(p.uid||'-')+'</b></span></span></div><div class="sg">'+card('Main',p.games||0)+card('Terbaik',p.best||0)+card('Rata-rata',p.avg||0)+card('Total poin',p.total||0)+'</div><div class="row" style="margin-top:10px"><span>🌌 Perburuan<small>'+hp+' / '+tot+' level • wilayah: '+esc(REG[ri])+'</small></span></div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">'+relBtn(p.rel,p.id)+(p.rel==='friend'?'<button class="sm" data-frm="'+p.id+'" style="background:#7f1d1d">Hapus teman</button>':'')+'</div></div><div><div class="sl">🚀 PESAWAT DIPAKAI</div>'+shipView(sh,rec,'pfc')+'</div></div>';
+  drawShipView('pfc',sh);
+  o.querySelectorAll('[data-fadd]').forEach(x=>x.onclick=async()=>{if(await rpc('friend_request',{p_target:x.dataset.fadd})){openProfile(id);if($('#fr').classList.contains('on'))renderFr()}});
+  o.querySelectorAll('[data-frm]').forEach(x=>x.onclick=async()=>{if(!confirm('Hapus dari daftar teman?'))return;if(await rpc('friend_remove',{p_other:x.dataset.frm})){openProfile(id);if($('#fr').classList.contains('on'))renderFr()}})}
+let frT=0,frQ='';
+const frRow=(p,btns)=>'<div class="it"><div class="inf">'+esc(p.nickname||p.username)+'<small>@'+esc(p.username)+' • UID '+esc(p.uid||'-')+'</small></div><div class="acts" style="flex-direction:row;flex-wrap:wrap;justify-content:flex-end"><button class="sm" data-pf="'+p.id+'">👤 Profil</button>'+btns+'</div></div>';
+async function renderFr(){if(needLogin())return;const o=$('#frb');o.innerHTML='<p class="note">Memuat...</p>';
+  const raw=await rpc('my_friends'),all=Array.isArray(raw)?raw:[],fr=all.filter(x=>x.status==='accepted'),inc=all.filter(x=>x.status==='pending'&&!x.outgoing),out=all.filter(x=>x.status==='pending'&&x.outgoing);
+  mkTabs($('#frt'),['Teman ('+fr.length+')','Permintaan'+(inc.length?' ('+inc.length+')':''),'Cari Pemain'],frT,i=>{frT=i;renderFr()});
+  if(raw===null){o.innerHTML='<p class="note">Fitur teman belum aktif di database. Jalankan SQL fitur pertemanan di Supabase.</p>'}
+  else if(frT===0)o.innerHTML=(fr.map(p=>frRow(p,'<button class="sm" data-frm="'+p.id+'" style="background:#7f1d1d">Hapus</button>')).join('')||'<p class="note">Belum ada teman. Cari pemain lewat tab Cari Pemain.</p>');
+  else if(frT===1)o.innerHTML=(inc.length?'<div class="sl">PERMINTAAN MASUK</div>':'')+inc.map(p=>frRow(p,'<button class="sm" data-fa="'+p.fid+'" style="background:#059669">Terima</button><button class="sm" data-fd="'+p.fid+'" style="background:#7f1d1d">Tolak</button>')).join('')+(out.length?'<div class="sl">PERMINTAAN TERKIRIM</div>':'')+out.map(p=>frRow(p,'<button class="sm" data-frm="'+p.id+'">Batalkan</button>')).join('')+(!inc.length&&!out.length?'<p class="note">Tidak ada permintaan pertemanan.</p>':'');
+  else{o.innerHTML='<div style="display:flex;gap:6px"><input class="in" id="frq" maxlength="30" placeholder="Username atau UID (9 angka)" value="'+esc(frQ)+'"><button class="sm" id="frgo" style="margin-bottom:8px;padding:0 16px">CARI</button></div><div id="frs" class="wg"></div>';
+    const go=async()=>{frQ=$('#frq').value.trim();const t=$('#frs');if(frQ.replace(/^@/,'').length<2){t.innerHTML='<p class="note">Ketik minimal 2 karakter.</p>';return}t.innerHTML='<p class="note">Mencari...</p>';const r=await rpc('search_players',{p_q:frQ}),a=Array.isArray(r)?r:[];
+      t.innerHTML=a.map(p=>frRow(p,relBtn(p.rel,p.id))).join('')||'<p class="note">Pemain tidak ditemukan.</p>';bindFr(t)};
+    $('#frgo').onclick=go;$('#frq').onkeydown=e=>{if(e.key==='Enter')go()};if(frQ)go()}
+  bindFr(o)}
+function bindFr(o){o.querySelectorAll('[data-pf]').forEach(x=>x.onclick=()=>openProfile(x.dataset.pf));
+  o.querySelectorAll('[data-fa]').forEach(x=>x.onclick=async()=>{if(await rpc('friend_respond',{p_id:+x.dataset.fa,p_accept:true}))renderFr()});
+  o.querySelectorAll('[data-fd]').forEach(x=>x.onclick=async()=>{if(await rpc('friend_respond',{p_id:+x.dataset.fd,p_accept:false}))renderFr()});
+  o.querySelectorAll('[data-frm]').forEach(x=>x.onclick=async()=>{if(await rpc('friend_remove',{p_other:x.dataset.frm}))renderFr()});
+  o.querySelectorAll('[data-fadd]').forEach(x=>x.onclick=async()=>{if(await rpc('friend_request',{p_target:x.dataset.fadd}))renderFr()})}
+$('#frm').onclick=()=>{if(needLogin())return;$('#fr').classList.add('on');renderFr()};
 async function showLb(){$('#lb').classList.add('on');
   mkTabs($('#lbt'),['Semua mode','Sendiri','Duel','Quad'],lbm,i=>{lbm=i;showLb()});
   mkTabs($('#lbt2'),['Semua level','Mudah','Sedang','Sulit','Extreme','God King'],lbL+1,i=>{lbL=i-1;showLb()});
@@ -748,15 +804,15 @@ async function adminTab(){const b=$('#adb');
   if(!sb||!user||user.role!=='admin'){b.innerHTML='<p class="note">Khusus admin.</p>';return}
   b.innerHTML='<p class="note">Memuat...</p>';
   if(adT===0){const sel=(k,arr)=>'<select class="in" data-k="'+k+'">'+arr.map((n,i)=>'<option value="'+i+'"'+(+CFG[k]===i?' selected':'')+'>'+n+'</option>').join('')+'</select>';
-    b.innerHTML=AF.map(f=>'<label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'">').join('')+'<label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'<div class="sl">MATERI NON-MATEMATIKA (centang = dibuka untuk semua pemain; admin selalu bisa)</div>'+Object.keys(MAPEL).filter(m=>m!=='Matematika').map(m=>'<label class="note" style="display:block;margin:12px 0 2px;color:#f472b6;font-weight:900"><input type="checkbox" data-om="'+esc(m)+'"'+(MAPEL[m].every(n=>(CFG.openTopics||[]).includes(n))?' checked':'')+'> 🔓 '+m+' — buka semua materi mapel ini</label>'+MAPEL[m].map(n=>'<label class="lbl2" style="display:inline-block;margin-right:14px"><input type="checkbox" data-ot="'+esc(n)+'"'+((CFG.openTopics||[]).includes(n)?' checked':'')+'> '+esc(n)+'</label>').join('')).join('')+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
+    b.innerHTML=AF.map(f=>'<div class="fld"><label class="lbl2">'+f[1]+'</label><input class="in" data-k="'+f[0]+'" type="'+f[2]+'" step="any" value="'+esc(CFG[f[0]])+'"></div>').join('')+'<div class="fld"><label class="lbl2">Tema bawaan</label>'+sel('theme',TH.map(t=>t[0]))+'</div>'+'<div class="sl">MATERI NON-MATEMATIKA (centang = dibuka untuk semua pemain; admin selalu bisa)</div>'+Object.keys(MAPEL).filter(m=>m!=='Matematika').map(m=>'<label class="note" style="display:block;margin:12px 0 2px;color:#f472b6;font-weight:900"><input type="checkbox" data-om="'+esc(m)+'"'+(MAPEL[m].every(n=>(CFG.openTopics||[]).includes(n))?' checked':'')+'> 🔓 '+m+' — buka semua materi mapel ini</label>'+'<div class="tpg">'+MAPEL[m].map(n=>'<label class="lbl2" style="display:inline-block"><input type="checkbox" data-ot="'+esc(n)+'"'+((CFG.openTopics||[]).includes(n)?' checked':'')+'> '+esc(n)+'</label>').join('')+'</div>').join('')+'<p class="note" id="adm0"></p><button class="bt" id="adsv">SIMPAN PENGATURAN</button>';
     const omSync=()=>b.querySelectorAll('[data-om]').forEach(x=>{x.checked=MAPEL[x.dataset.om].every(n=>{const c=[...b.querySelectorAll('[data-ot]')].find(y=>y.dataset.ot===n);return c&&c.checked})});
     b.querySelectorAll('[data-om]').forEach(x=>x.onchange=()=>{const set=new Set(MAPEL[x.dataset.om]);b.querySelectorAll('[data-ot]').forEach(y=>{if(set.has(y.dataset.ot))y.checked=x.checked})});
     b.querySelectorAll('[data-ot]').forEach(y=>y.onchange=omSync);
     $('#adsv').onclick=async()=>{b.querySelectorAll('[data-k]').forEach(x=>{const k=x.dataset.k;CFG[k]=(x.type==='number'||x.tagName==='SELECT')?Number(x.value):x.value});
       CFG.difMul=String(CFG.difMul).split(',').map(Number);CFG.openTopics=[...b.querySelectorAll('[data-ot]')].filter(x=>x.checked).map(x=>x.dataset.ot);applyCfg();drawMat();applySet();const{error}=await sb.from('app_settings').upsert({key:'config',value:CFG});$('#adm0').textContent=error?'Gagal: '+error.message:'Tersimpan ✓ (berlaku untuk semua pemain)'}}
-  else if(adT===1){const{data}=await sb.from('profiles').select('id,username,nickname,role,coins').order('username');
-    b.innerHTML='<p class="note">Atur peran: <b>user</b> = pemain biasa, <b>guru</b> = boleh mode Duel & Quad, <b>admin</b> = semua akses.</p>'+((data||[]).map(r=>'<div class="row" style="flex-wrap:wrap;gap:6px"><span>'+esc(r.nickname||r.username)+'<small>@'+esc(r.username)+'</small></span><span style="display:flex;gap:4px;align-items:center"><select class="in" style="width:auto;margin:0" data-u="'+r.id+'" data-f="role">'+['user','guru','admin'].map(o=>'<option'+(o===r.role?' selected':'')+'>'+o+'</option>').join('')+'</select><input class="in" style="width:80px;margin:0" type="number" data-u="'+r.id+'" data-f="coins" value="'+r.coins+'"><button class="sm" data-save="'+r.id+'">Simpan</button><button class="sm" data-rp="'+r.id+'" style="background:#7c2d12">🔑 Reset PW</button></span></div>').join('')||'<p class="note">Belum ada pengguna.</p>');
-    b.querySelectorAll('[data-save]').forEach(x=>x.onclick=async()=>{const id=x.dataset.save,role=b.querySelector('[data-u="'+id+'"][data-f="role"]').value,coins=Math.round(+b.querySelector('[data-u="'+id+'"][data-f="coins"]').value)||0;const{error}=await sb.rpc('admin_set_user',{p_id:id,p_role:role,p_coins:coins});x.textContent=error?'Gagal':'✓';if(error)alert('Gagal menyimpan: '+error.message);else if(id===user.id)refreshMe()});
+  else if(adT===1){let pq=await sb.from('profiles').select('id,username,nickname,role,coins,uid').order('username');if(pq.error)pq=await sb.from('profiles').select('id,username,nickname,role,coins').order('username');const data=pq.data;
+    b.innerHTML='<p class="note">Atur peran: <b>user</b> = pemain biasa, <b>guru</b> = boleh mode Duel & Quad, <b>admin</b> = semua akses.</p>'+((data||[]).map(r=>'<div class="row" style="flex-wrap:wrap;gap:6px"><span>'+esc(r.nickname||r.username)+'<small>@'+esc(r.username)+'</small></span><span style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"><input class="in" style="width:112px;margin:0" maxlength="9" inputmode="numeric" placeholder="UID" title="UID (9 angka)" data-u="'+r.id+'" data-f="uid" data-o="'+esc(r.uid||'')+'" value="'+esc(r.uid||'')+'"><select class="in" style="width:auto;margin:0" data-u="'+r.id+'" data-f="role">'+['user','guru','admin'].map(o=>'<option'+(o===r.role?' selected':'')+'>'+o+'</option>').join('')+'</select><input class="in" style="width:80px;margin:0" type="number" data-u="'+r.id+'" data-f="coins" value="'+r.coins+'"><button class="sm" data-save="'+r.id+'">Simpan</button><button class="sm" data-rp="'+r.id+'" style="background:#7c2d12">🔑 Reset PW</button></span></div>').join('')||'<p class="note">Belum ada pengguna.</p>');
+    b.querySelectorAll('[data-save]').forEach(x=>x.onclick=async()=>{const id=x.dataset.save,role=b.querySelector('[data-u="'+id+'"][data-f="role"]').value,coins=Math.round(+b.querySelector('[data-u="'+id+'"][data-f="coins"]').value)||0;let{error}=await sb.rpc('admin_set_user',{p_id:id,p_role:role,p_coins:coins});const ue=b.querySelector('[data-u="'+id+'"][data-f="uid"]');if(!error&&ue&&ue.value.trim()!==ue.dataset.o){const u2=await sb.rpc('admin_set_uid',{p_id:id,p_uid:ue.value.trim()});error=u2.error;if(!error)ue.dataset.o=ue.value.trim()}x.textContent=error?'Gagal':'✓';if(error)alert('Gagal menyimpan: '+error.message);else if(id===user.id)refreshMe()});
     b.querySelectorAll('[data-rp]').forEach(x=>x.onclick=async()=>{const pw=prompt('Password baru untuk pemain ini (min. 6 karakter).\nPassword lama tidak bisa dilihat karena tersimpan terenkripsi.');if(!pw)return;if(pw.length<6){alert('Minimal 6 karakter.');return}const r=await rpc('admin_reset_password',{p_id:x.dataset.rp,p_password:pw});if(r)alert('Password berhasil diganti. Sampaikan password baru ke pemain.')})}
   
 else if(adT===2){const{data}=await sb.from('scores').select('id,username,score,mode').order('created_at',{ascending:false}).limit(30);
@@ -775,7 +831,7 @@ else if(adT===2){const{data}=await sb.from('scores').select('id,username,score,m
       c.querySelectorAll('[data-cs]').forEach(bn=>bn.onclick=async()=>{const id=bn.dataset.cs;CFG.rar=CFG.rar||{};CFG.rar[id]=+c.querySelector('[data-cr="'+id+'"]').value;const e=(await sb.from('app_settings').upsert({key:'config',value:CFG})).error;bn.textContent=e?'Gagal':'✓'})});
     b.querySelectorAll('[data-sv]').forEach(x=>x.onclick=async()=>{const id=x.dataset.sv,price=+b.querySelector('[data-p="'+id+'"]').value,active=b.querySelector('[data-v="'+id+'"]').checked;CFG.rar=CFG.rar||{};CFG.rar[id]=+b.querySelector('[data-rr="'+id+'"]').value;const r1=await sb.from('ship_designs').update({price,active}).eq('id',id),r2=await sb.from('app_settings').upsert({key:'config',value:CFG}),error=r1.error||r2.error;x.textContent=error?'Gagal':'✓';if(error)alert('Gagal menyimpan: '+error.message)});
     renderEditor($('#aded'),{max:81,label:'TAMBAH KE TOKO',extra:'<input class="in" id="epr" type="number" placeholder="Harga (koin)">',onSave:async(n,bl)=>{const pr=+$('#epr').value;if(!n||!(pr>=0)||bl.length<3){alert('Isi nama, harga, dan minimal 3 blok.');return}const{error}=await sb.from('ship_designs').insert({name:n,blocks:bl,is_catalog:true,price:pr,creator_name:'Toko Resmi'});if(error)alert(error.message);else adminTab()}})}
-  else if(adT===5){const sec=t=>'<div class="sl">'+t+'</div>',inp=(k,i,v,lb)=>'<label class="lbl2">'+lb+'</label><input class="in" type="number" step="any" min="0" data-pk="'+k+'" data-pi="'+i+'" value="'+v+'">';
+  else if(adT===5){const sec=t=>'<div class="sl">'+t+'</div>',inp=(k,i,v,lb)=>'<div class="fld"><label class="lbl2">'+lb+'</label><input class="in" type="number" step="any" min="0" data-pk="'+k+'" data-pi="'+i+'" value="'+v+'"></div>';
     b.innerHTML='<p class="note">Atur harga dan pengali. Berlaku untuk semua pemain setelah disimpan.</p>'
      +sec('🛒 ITEM PENDUKUNG')+ITM.slice(0,10).map((x,i)=>inp('itemPrice',i,CFG.itemPrice[i],x.e+' '+x.n)).join('')+inp('gktPrice','',CFG.gktPrice,'🏰 God Kingdom Teleportation')+inp('manaPrice','',CFG.manaPrice,'🧴 Bottle of Mana')
      +sec('🔧 SERVIS PESAWAT')+[1,2,3,4,5].map(n=>inp('svcPrice',n-1,CFG.svcPrice[n-1],'Part of Service Lv '+n)).join('')+inp('guardPrice','',CFG.guardPrice,'🛡 Guard of Spaceship')+inp('potionPrice','',CFG.potionPrice,'🧪 Potion of Passive')+inp('prsPrice','',CFG.prsPrice,'📜 PRS (Permit to Repair a Spacecraft)')+inp('prsPot','',CFG.prsPot,'Jumlah Potion of Passive per pemasangan pasif')+sec('🧩 MAKSIMAL PASIF PER KELANGKAAN (tidak bisa ditambah lebih dari ini)')+RAR.map((n,i)=>inp('pasMax',i,CFG.pasMax[i],n)).join('')
