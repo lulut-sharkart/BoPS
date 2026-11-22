@@ -57,6 +57,7 @@ h1{font-weight:900;font-size:clamp(1.5rem,5.2vw,4rem);line-height:1;background:l
 .cl{width:100%;margin-top:10px;font:inherit;font-weight:900;background:#fff;color:#000;border:0;border-radius:10px;padding:12px;cursor:pointer}
 .sm{font:inherit;font-size:.65rem;font-weight:700;padding:6px 10px;border:0;border-radius:6px;background:#334155;color:#fff;cursor:pointer}
 .tb2{width:100%;border-collapse:collapse;font-size:.75rem}.tb2 th,.tb2 td{padding:7px 6px;text-align:left;border-bottom:1px solid #1e293b}.tb2 th{color:#94a3b8}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.sc2{background:#1e293b;border-radius:10px;padding:10px 4px;text-align:center}.sc2 b{display:block;font-size:1.1rem;color:#22d3ee}.sc2 span{font-size:.55rem;color:#94a3b8}
 .lbl2{font-size:.65rem;color:#94a3b8;margin:6px 0 3px;display:block}
 #ytw{position:fixed;right:0;bottom:0;width:2px;height:2px;overflow:hidden;opacity:.01;pointer-events:none}
 
@@ -301,12 +302,21 @@ async function setUser(session){
     user={id:u.id,email:u.email,name,role,dbg}}
   $('#acc').textContent=user?'👤 '+user.name:'👤 Masuk';$('#adm').hidden=!(user&&user.role==='admin')}
 if(sb){sb.auth.getSession().then(r=>setUser(r.data.session));sb.auth.onAuthStateChange((_e,s)=>{setTimeout(()=>setUser(s),0)})}
+async function loadStats(){const o=$('#stt');if(!o||!user)return;
+  const{data,error}=await sb.from('scores').select('score,mode,level,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(500);
+  if(error){o.innerHTML='<p class="note">Statistik gagal dimuat: '+esc(error.message)+'</p>';return}
+  if(!data.length){o.innerHTML='<p class="note">Belum ada permainan tersimpan. Mainkan satu ronde untuk melihat statistikmu!</p>';return}
+  const n=data.length,tot=data.reduce((a,r)=>a+r.score,0),best=Math.max(...data.map(r=>r.score)),MN={1:'Sendiri',2:'Duel',4:'Quad'},LV=['Mudah','Sedang','Sulit','Extreme'];
+  const card=(k,v)=>'<div class="sc2"><b>'+v+'</b><span>'+k+'</span></div>';
+  const per=[1,2,4].map(m=>{const r=data.filter(x=>x.mode===m);return r.length?'<tr><td>'+MN[m]+'</td><td>'+r.length+'</td><td>'+Math.max(...r.map(x=>x.score))+'</td><td>'+Math.round(r.reduce((a,x)=>a+x.score,0)/r.length)+'</td></tr>':''}).join('');
+  const rc=data.slice(0,5).map(r=>'<tr><td>'+new Date(r.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</td><td>'+(MN[r.mode]||r.mode)+' · '+(LV[r.level]||'')+'</td><td>'+r.score+'</td></tr>').join('');
+  o.innerHTML='<div class="sg">'+card('Main',n)+card('Terbaik',best)+card('Rata-rata',Math.round(tot/n))+card('Total poin',tot)+'</div><div class="sl">PER MODE</div><table class="tb2"><tr><th>Mode</th><th>Main</th><th>Terbaik</th><th>Rata-rata</th></tr>'+per+'</table><div class="sl">5 PERMAINAN TERAKHIR</div><table class="tb2">'+rc+'</table>'}
 function renderAuth(msg){const b=$('#authb');
   if(!sb){b.innerHTML='<h2>👤 AKUN</h2><p class="note">Supabase belum dikonfigurasi. Isi SB_URL dan SB_KEY di bagian atas script index.html.</p><button class="cl">TUTUP</button>';return}
-  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>'+esc(user.email)+' • Peran: '+esc(user.role)+'</small></span></div>'+(user.dbg?'<p class="note">Diagnosa: '+esc(user.dbg)+'</p>':'')+(user.role==='admin'?'<button class="bt" id="goadm" style="background:#059669">🛠 BUKA PANEL ADMIN</button>':'')+'<button class="bt" id="rl" style="background:#334155">MUAT ULANG PERAN</button><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
+  if(user){b.innerHTML='<h2>👤 AKUN</h2><div class="row"><span>'+esc(user.name)+'<small>'+esc(user.email)+' • Peran: '+esc(user.role)+'</small></span></div>'+(user.dbg?'<p class="note">Diagnosa: '+esc(user.dbg)+'</p>':'')+'<div id="stt"><p class="note">Memuat statistik...</p></div>'+(user.role==='admin'?'<button class="bt" id="goadm" style="background:#059669">🛠 BUKA PANEL ADMIN</button>':'')+'<button class="bt" id="rl" style="background:#334155">MUAT ULANG PERAN</button><button class="bt" id="lo">KELUAR</button><button class="cl">TUTUP</button>';
     $('#lo').onclick=async()=>{await sb.auth.signOut();$('#auth').classList.remove('on')};
     $('#rl').onclick=async()=>{const r=await sb.auth.getSession();await setUser(r.data.session);renderAuth()};
-    const ga=$('#goadm');if(ga)ga.onclick=()=>{$('#auth').classList.remove('on');$('#admin').classList.add('on');renderAdminTabs()};return}
+    const ga=$('#goadm');if(ga)ga.onclick=()=>{$('#auth').classList.remove('on');$('#admin').classList.add('on');renderAdminTabs()};loadStats();return}
   const up=authTab==='up';
   b.innerHTML='<h2>👤 AKUN</h2><div class="tabs"><button data-t="in" class="'+(up?'':'s')+'">MASUK</button><button data-t="up" class="'+(up?'s':'')+'">DAFTAR</button></div>'+(up?'<input class="in" id="au" placeholder="Username" maxlength="20">':'')+'<input class="in" id="ae" type="email" placeholder="Email"><input class="in" id="ap" type="password" placeholder="Password (min. 6 karakter)"><p class="note" id="am">'+esc(msg||'')+'</p><button class="bt" id="ago">'+(up?'DAFTAR':'MASUK')+'</button><button class="cl">TUTUP</button>';
   b.querySelectorAll('.tabs button').forEach(x=>x.onclick=()=>{authTab=x.dataset.t;renderAuth()});
@@ -326,7 +336,6 @@ async function showLb(){$('#lb').classList.add('on');const t=$('#lbt');t.innerHT
   o.innerHTML=data.length?'<table class="tb2"><tr><th>#</th><th>Pemain</th><th>Skor</th><th>Mode</th></tr>'+data.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(r.username)+'</td><td>'+r.score+'</td><td>'+({1:'Sendiri',2:'Duel',4:'Quad'}[r.mode]||r.mode)+' · '+(['Mudah','Sedang','Sulit','Extreme'][r.level]||'')+'</td></tr>').join('')+'</table>':'<p class="note">Belum ada skor.</p>'}
 async function saveScore(){const w=$('#wsave');w.textContent='';if(!sb||!L[0])return;
   if(!user){w.textContent='Masuk ke akun untuk menyimpan skor ke leaderboard.';return}
-  if(!L[0].score)return;
   const{error}=await sb.from('scores').insert({user_id:user.id,username:user.name,score:L[0].score,mode:mode,level:dif});
   w.textContent=error?'Skor gagal disimpan.':'Skor P1 tersimpan ke leaderboard ✓'}
 const AF=[['title','Judul game','text'],['footer','Teks developer (bagian bawah)','text'],['bgm','Link musik (YouTube atau file mp3)','text'],['time','Durasi permainan (detik)','number'],['lives','Jumlah nyawa (1–10)','number'],['points','Poin per asteroid','number'],['speed','Kecepatan jatuh (x)','number'],['spawn','Interval munculnya asteroid (x, besar = lebih jarang)','number'],['power','Frekuensi power-up (x, 0 = mati)','number']];
