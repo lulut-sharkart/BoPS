@@ -358,6 +358,13 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 #diff,#spdb{flex:0 0 auto}
 #spdb .b3[data-s="4"]{grid-column:1/-1}
 @media (max-width:560px){.pp.pi{grid-template-columns:repeat(2,minmax(0,1fr))}.pi .itbtn.sk .nm{display:none}}
+
+#rot{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#050816;color:#fff;font:800 1rem Orbitron,sans-serif;text-align:center;padding:20px}
+#rot i{font-size:4rem;font-style:normal;display:block;animation:rotp 1.6s ease-in-out infinite}
+@keyframes rotp{0%,30%{transform:rotate(0)}70%,100%{transform:rotate(-90deg)}}
+body.portrait #rot{display:flex}
+#fsask{position:fixed;inset:0;z-index:99998;display:none;align-items:center;justify-content:center;background:#000a;color:#fff;font:800 1.1rem Orbitron,sans-serif;text-align:center;padding:20px}
+body.needfs:not(.portrait) #fsask{display:flex}
 </style>
 </head>
 <body>
@@ -452,6 +459,8 @@ footer{position:absolute;left:0;right:0;bottom:max(6px,env(safe-area-inset-botto
 <div id="pf" class="modal" style="z-index:27"><div class="sbox wide2"><h2>👤 PROFIL PEMAIN</h2><div id="pfb"></div><button class="cl">TUTUP</button></div></div>
 <div id="stat" class="modal" style="z-index:28"><div class="sbox" style="width:min(460px,100%)"><h2 id="statt"></h2><div id="statb"></div><button class="cl">TUTUP</button></div></div>
 <div id="ytw"><div id="ytp"></div></div>
+<div id="rot"><i>📱</i><div>PUTAR PERANGKAT KE LANDSCAPE</div><small style="font-weight:500;opacity:.7">Game ini hanya bisa dimainkan dalam mode landscape</small></div>
+<div id="fsask">👆 SENTUH LAYAR UNTUK LAYAR PENUH</div>
 <footer id="ft">Developer: SharkArt.evo Education</footer>
 </div>
 
@@ -1600,6 +1609,17 @@ addEventListener('keydown',e=>{if(!$('#game').classList.contains('on')||!L[0])re
   if(/^\d$/.test(e.key))press(L[0],e.key);else if(e.key==='Backspace')press(L[0],'HAPUS');else if(e.key==='Enter')press(L[0],'TEMBAK')});
 applyCfg();applySet();updateModes();drawMat();loadCfg();requestAnimationFrame(t=>{lastT=t;loop(t)});
 
+})();
+
+/* ===== paksa landscape + fullscreen ===== */
+(function(){const B=document.body,de=document.documentElement,fs=()=>document.fullscreenElement||document.webkitFullscreenElement,
+ land=()=>innerWidth>=innerHeight;
+ const lock=()=>{try{const o=screen.orientation;if(o&&o.lock)o.lock('landscape').catch(()=>{})}catch(e){}};
+ const goFs=()=>{if(fs()||!land())return;try{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.then)r.then(lock).catch(()=>{});else lock()}catch(e){}};
+ const sync=()=>{B.classList.toggle('portrait',!land());B.classList.toggle('needfs',!fs());if(land()){lock()}};
+ ['resize','orientationchange','fullscreenchange','webkitfullscreenchange'].forEach(e=>addEventListener(e,()=>setTimeout(sync,60)));
+ ['pointerdown','touchend','click','keydown'].forEach(e=>document.addEventListener(e,()=>{goFs();setTimeout(sync,120)},true));
+ sync();
 })();
 </script>
 </body>
