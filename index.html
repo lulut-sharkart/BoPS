@@ -54,6 +54,11 @@ h1{font-weight:900;font-size:clamp(1.5rem,5.2vw,4rem);line-height:1;background:l
 #menu{padding-top:9vh}
 .modal{position:absolute;inset:0;z-index:20;background:#000000b3;display:none;align-items:center;justify-content:center;padding:2vh 3vw}
 .modal.on{display:flex}
+.modal:not(.on){display:flex;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .22s ease,visibility 0s linear .24s}
+.modal.on{opacity:1;transition:opacity .22s ease}
+*{scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
+.sbox,.screen,.wg{scroll-behavior:auto!important}
 .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .tabs button{font:inherit;font-weight:700;font-size:.7rem;padding:8px 12px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer}
 .tabs button.s{background:#4f46e5;color:#fff}
@@ -398,7 +403,7 @@ body.portrait #rot{display:flex}
 
 /* ===== revisi 2: pop up penuh, tombol layar penuh, mode, story ===== */
 #app .modal{padding:3vh 3vw}
-#app .modal .sbox,#app #set .sbox{width:min(720px,94%)!important;max-width:720px!important;height:auto;max-height:92%;border-radius:20px;border-width:2px;padding:18px 20px;margin:auto;box-shadow:0 18px 60px #000a}
+#app .modal .sbox,#app #set .sbox{width:min(1100px,94%)!important;max-width:1100px!important;height:auto;min-height:min(62vh,100%);max-height:92%;border-radius:20px;border-width:2px;padding:18px 20px;margin:auto;box-shadow:0 18px 60px #000a}
 #app #set{padding:3vh 3vw}
 #menu{max-width:1180px;margin-left:auto;margin-right:auto;width:100%}
 #app #set .sbox>*:not(.cl){max-width:760px;margin-left:auto;margin-right:auto}
@@ -525,10 +530,10 @@ body.portrait #rot{display:flex}
         <button class="b3 s" data-n="1"><em>🧑‍✈️</em>SENDIRI</button>
         <button class="b3" data-n="2"><em>✈️✈️</em>DUEL (2)<span class="lk">🔒 GURU</span></button>
         <button class="b3" data-n="4"><span class="new">BARU</span><em>✈️✈️</em>QUAD (4)<span class="lk">🔒 GURU</span></button>
-      </div></div><button class="sm bk" data-bk="A" type="button">◀ KEMBALI</button></div>
+      </div></div><div class="modes arcm" style="margin-top:8px"><button class="b3 arc" id="arcBtn" type="button"><em>🌌</em>PERBURUAN WILAYAH<small>Edukasi • jawab soal</small></button></div><button class="sm bk" data-bk="A" type="button">◀ KEMBALI</button></div>
     <div class="stp" id="stR"><div class="h c1">MODE ARCADE</div><div class="modes arcm">
       <button class="b3 story" id="storyBtn" type="button"><em>📖</em>ENDLESS STORY<small>Analog • skill aktif • tanpa waktu</small></button>
-      <button class="b3 arc" id="arcBtn" type="button"><em>🌌</em>PERBURUAN WILAYAH<small>Wilayah Perburuan</small></button></div><button class="sm bk" data-bk="A" type="button">◀ KEMBALI</button></div>
+      <button class="b3 arc" id="arcHunt" type="button"><em>🌌</em>PERBURUAN WILAYAH<small>Arcade • tanpa soal & numpad</small></button></div><button class="sm bk" data-bk="A" type="button">◀ KEMBALI</button></div>
     <div class="stp" id="stC">    <div class="two">
       <div class="box">
         <div class="h c2">KESULITAN SOAL</div>
@@ -564,6 +569,8 @@ body.portrait #rot{display:flex}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/motion@11.18.2/dist/motion.js"></script>
 <script>
 (function(){
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -1193,7 +1200,7 @@ function renderReg(sel){const o=$('#regb'),hp=user.hp||0;
   else{const cl=Math.max(0,Math.min(100,hp-sel*100));
     o.innerHTML='<button class="sm" id="rback" style="margin-bottom:8px">◀ Semua wilayah</button><div class="sl" style="color:'+REGC[sel]+'">'+REG[sel]+'</div><p class="note">Harta ×'+CFG.regionMul[sel]+' • Tembak benar sebanyak target level sebelum nyawa atau waktu habis. Kesulitan dan materi mengikuti pilihanmu di menu.</p><div class="lvg">'+Array.from({length:100},(_,k)=>{const l=k+1;return '<button data-l="'+l+'" class="'+(l<=cl?'ok':l===cl+1?'cur':'')+'"'+(l>cl+1?' disabled':'')+'>'+l+'</button>'}).join('')+'</div>';
     $('#rback').onclick=()=>renderReg();
-    o.querySelectorAll('[data-l]').forEach(x=>x.onclick=()=>{const l=+x.dataset.l;hunt={r:sel,l,target:HT(sel,l)};$('#reg').classList.remove('on');mode=1;updateModes();prep()})}}
+    o.querySelectorAll('[data-l]').forEach(x=>x.onclick=()=>{const l=+x.dataset.l;$('#reg').classList.remove('on');if(regArc){storyStart({r:sel,l,target:HT(sel,l)*2});return}hunt={r:sel,l,target:HT(sel,l)};mode=1;updateModes();prep()})}}
 function openReg(){if(needLogin())return;$('#reg').classList.add('on');renderReg()}
 function syncArc(){const a=$('#arcBtn');if(a)a.classList.toggle('s',arc);$$('#modes button').forEach(b=>{if(arc)b.classList.remove('s');else b.classList.toggle('s',+b.dataset.n===mode)});const g=$('#go');if(g){g.classList.toggle('arcgo',arc);g.textContent=arc?'🌌 PILIH WILAYAH':'🚀 MAIN'}}
 $('#arcBtn').onclick=()=>{arc=true;mode=1;syncArc()};
@@ -1553,9 +1560,11 @@ $('#mEdu').onclick=()=>setStep('E');$('#mArc').onclick=()=>setStep('R');
 $$('#setup [data-bk]').forEach(b=>b.onclick=()=>setStep(b.dataset.bk==='B'?(arc?'R':'E'):b.dataset.bk));
 $$('#modes button').forEach(b=>b.addEventListener('click',()=>{if(!b.disabled)setStep('C')}));
 $('#arcBtn').addEventListener('click',()=>setStep('C'));
-$('#storyBtn').onclick=()=>{$('#setup').classList.remove('on');storyStart()};
+$('#storyBtn').onclick=()=>{$('#setup').classList.remove('on');stHunt=null;storyStart()};
 $('#start').onclick=()=>{setStep('A');$('#setup').classList.add('on')};
-$('#go').onclick=()=>{$('#setup').classList.remove('on');if(arc){openReg();return}hunt=null;prep()};
+let regArc=false;
+$('#arcHunt').onclick=()=>{if(needLogin())return;$('#setup').classList.remove('on');regArc=true;openReg()};
+$('#go').onclick=()=>{$('#setup').classList.remove('on');if(arc){regArc=false;openReg();return}hunt=null;prep()};
 $('#btnLb').onclick=()=>$('#lbb').click();
 $('#pill').onclick=()=>$('#acc').click();
 const TOPUP=[[5000,1000],[25000,5000],[50000,10000],[125000,25000],[250000,50000],[500000,100000]];
@@ -1790,14 +1799,15 @@ let G=null,stRaf=0,stPause=false,stKeys={},stJ={x:0,y:0,id:null,ox:0,oy:0},stHud
 function storyStop(){G=null;cancelAnimationFrame(stRaf);stPause=false}
 function stSize(){const c=$('#stCanvas'),r=c.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}G.d=d;G.w=w;G.h=h}
 function stBan(t,sub){const e=$('#stbn');e.innerHTML='<small>ENDLESS STORY</small><strong>'+esc(t)+'</strong><em>'+esc(sub||'')+'</em>';e.classList.remove('on');void e.offsetWidth;e.classList.add('on')}
-function storyStart(){
+let stHunt=null;
+function storyStart(h){if(h&&h.r!=null)stHunt=h;
   $$('.screen,#game').forEach(x=>x.classList.remove('on'));$('#story').classList.add('on');
   const sh=user&&user.ship?user.ship:null,si=user?shipInfo():null,sc=document.createElement('canvas');sc.width=sc.height=64;drawPrev(sc,sh?sh.blocks:null,sh?sh.eng:0);
   const mx=si?mxHp(si):100;
-  G={sc,eng:sh?sh.eng:0,x:0,y:0,a:0,hp:mx,mx,score:0,kills:0,wave:1,wt:0,sp:.5,fire:0,inv:0,ast:[],sh:[],fx:[],st:[],t:0,cd:{},buf:{},over:false,sks:user?skLoad():[],bossW:0,stT:0,d:1,w:800,h:400,hz:[],hzT:12,rar:si?si.rar:0,intro:0,fl:0};
+  G={sc,eng:sh?sh.eng:0,x:0,y:0,a:0,hp:mx,mx,score:0,kills:0,wave:1,wt:0,sp:.5,fire:0,inv:0,ast:[],sh:[],fx:[],st:[],t:0,cd:{},buf:{},over:false,sks:user?skLoad():[],bossW:0,stT:0,d:1,w:800,h:400,hz:[],hzT:12,hunt:stHunt,rar:si?si.rar:0,intro:0,fl:0};
   stPause=false;stJ.x=stJ.y=0;stKeys={};stSize();G.x=G.w/2;G.y=G.h*.68;G.intro=1.4+G.rar*.3;G.it=0;G.inv=G.intro;beep(220+G.rar*60,.5,'sawtooth',.06,900+G.rar*150);
   for(let i=0;i<70;i++)G.st.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.4,v:Math.random()*.5+.2});
-  stBuildSk();$('#stpov').classList.remove('on');stBan(STORY[0][0],STORY[0][1]);stHud=0;
+  if(stHunt){G.wave=1+Math.floor(stHunt.r*1.2+stHunt.l/25)}stBuildSk();$('#stpov').classList.remove('on');if(stHunt)stBan(REG[stHunt.r]+' • Level '+stHunt.l,'Hancurkan '+stHunt.target+' meteor!');else stBan(STORY[0][0],STORY[0][1]);stHud=0;
   cancelAnimationFrame(stRaf);let last=performance.now();
   const lp=t=>{if(!G||!$('#story').classList.contains('on'))return;const dt=Math.min(.05,(t-last)/1000);last=t;if(!stPause&&!G.over)stStep(dt);stDraw();stUi(dt);stRaf=requestAnimationFrame(lp)};
   stRaf=requestAnimationFrame(lp)}
@@ -1808,7 +1818,7 @@ function stBuildSk(){const o=$('#stsk');o.innerHTML='';
 function stDrink(){if(!G||G.over||stPause)return;if((X.mbt||0)<1){stBan('BOTTLE OF MANA HABIS','Beli di Space Store');return}if(mnNow()>=mnMax()){stBan('MANA SUDAH PENUH','');return}mnDrinkCore();beep(700,.35,'sine',.08,1400)}
 function stUi(dt){stHud-=dt;if(stHud>0)return;stHud=.12;const g=G;
   $('#sthpt').textContent=Math.ceil(Math.max(0,g.hp));$('#sthpb').style.width=Math.max(0,g.hp/g.mx*100)+'%';
-  $('#stinfo').textContent='BAB '+g.wave+' • SKOR '+g.score;$('#stmn').textContent=mnNow()+'/'+mnMax();$('#stmnb').style.width=(mnNow()/mnMax()*100)+'%';
+  $('#stinfo').textContent=g.hunt?REG[g.hunt.r]+' Lv'+g.hunt.l+' • '+Math.min(g.kills,g.hunt.target)+'/'+g.hunt.target:'BAB '+g.wave+' • SKOR '+g.score;$('#stmn').textContent=mnNow()+'/'+mnMax();$('#stmnb').style.width=(mnNow()/mnMax()*100)+'%';
   $$('#stsk .stb').forEach(b=>{if(b.classList.contains('stm')){b.querySelector('.cnt').textContent='×'+(X.mbt||0);return}const id=b.dataset.sk,s=g.sks.find(x=>x.id===id),c=g.cd[id]||0;b.querySelector('.cdv').textContent=c>0?Math.ceil(c)+'s':'';b.classList.toggle('cdn',c>0);b.classList.toggle('nom',mnNow()<mnCost(s))})}
 function stSpawn(boss){const g=G,w=g.w,h=g.h,side=R(0,3),m=70;let x,y;
   if(side===0){x=Math.random()*w;y=-m}else if(side===1){x=w+m;y=Math.random()*h}else if(side===2){x=Math.random()*w;y=h+m}else{x=-m;y=Math.random()*h}
@@ -1848,7 +1858,9 @@ function stSkill(id){const g=G;if(!g||g.over||stPause)return;const s=g.sks.find(
    case 'xeon':for(let i=0;i<6;i++){const a=g.a+(i-2.5)*.5;g.sh.push({x:g.x,y:g.y,vx:Math.sin(a)*380,vy:-Math.cos(a)*380,life:2.5,d:8,pierce:false,home:true,big:true,hit:null})}break;
    case 'wings':g.buf.wings=8;break;
    default:g.buf.rapid=8}}
-function stOver(){const g=G;g.over=true;const coins=user?Math.floor(g.score/20):0;if(coins>0){X.spent-=coins;xs();$('#acc').textContent='👤 '+user.name+' · 🪙'+wal()}
+async function stHuntSave(win){const g=G,w=$('#stSub');if(!user||!sb)return;try{const r=await sb.rpc('submit_hunt',{p_region:g.hunt.r,p_level:g.hunt.l,p_dif:0,p_hits:Math.min(g.kills,g.hunt.target),p_win:!!win});if(r.error){w.textContent+=' • gagal simpan: '+r.error.message;return}w.textContent=(win?'Level selesai ✓ ':'')+'Harta perburuan +'+r.data.earned+' koin (total 🪙'+r.data.coins+')';refreshMe()}catch(e){}}
+function stWin(){const g=G;g.over=true;stBoom(g.x,g.y,'#fde047',60);beep(880,.5,'sine',.1,1600);$('#stTit').textContent='LEVEL SELESAI!';$('#stSub').textContent='Meteor hancur '+g.kills+(user?' • menyimpan...':' • Masuk akun agar mendapat koin');$('#stres').style.display='none';$('#stag').style.display='';stHuntSave(true);setTimeout(()=>{if(G===g)$('#stpov').classList.add('on')},700)}
+function stOver(){const g=G;g.over=true;if(g.hunt){stBoom(g.x,g.y,'#fb923c',50);sfx.shipBoom();$('#stTit').textContent='PESAWAT HANCUR';$('#stSub').textContent='Meteor hancur '+g.kills+'/'+g.hunt.target;$('#stres').style.display='none';$('#stag').style.display='';stHuntSave(false);setTimeout(()=>{if(G===g)$('#stpov').classList.add('on')},900);return}const coins=user?Math.floor(g.score/20):0;if(coins>0){X.spent-=coins;xs();$('#acc').textContent='👤 '+user.name+' · 🪙'+wal()}
   stBoom(g.x,g.y,'#fb923c',50);sfx.shipBoom();
   $('#stTit').textContent='PESAWAT HANCUR';$('#stSub').textContent='Skor '+g.score+' • Bab '+g.wave+' • Meteor hancur '+g.kills+(user?' • +'+coins+' koin':' • Masuk akun agar mendapat koin');
   $('#stres').style.display='none';$('#stag').style.display='';setTimeout(()=>{if(G===g)$('#stpov').classList.add('on')},900)}
@@ -1861,6 +1873,7 @@ function stStep(dt){stSize();const g=G;g.t+=dt;g.wt+=dt;
   if(g.intro>0){g.it+=dt;g.intro-=dt}
   if(g.wt>=25){g.wt=0;g.wave++;const n=g.wave-1,e=STORY[n];stBan((e?e[0]:'BAB '+g.wave+' • Perjalanan Tanpa Akhir')+' — BOSS!','Pemimpin babak ini muncul. Kalahkan dia!');g.bossW=g.wave;stSpawn(true);sfx.hit&&beep(120,.6,'sawtooth',.08,60)}
   g.hzT-=dt;if(g.hzT<=0&&g.wave>=1){g.hzT=Math.max(7,16-g.wave);stHz()}
+  if(g.hunt&&!g.over&&g.kills>=g.hunt.target){stWin();return}
   g.hz.forEach(z=>stHzUpd(z,dt));g.hz=g.hz.filter(z=>!z.dead);g.fl+=dt;
   g.sp-=dt;if(g.sp<=0){g.sp=Math.max(.35,1.5-g.wave*.12);if(g.ast.length<8+g.wave*2)stSpawn(false)}
   g.fire-=dt;if(g.fire<=0){g.fire=(g.buf.rapid>0||g.buf.wings>0)?.1:.26;stShoot()}
@@ -1895,11 +1908,22 @@ function stDraw(){const g=G,c=$('#stCanvas'),x=c.getContext('2d'),d=g.d;x.setTra
   const up=e=>{if(e.pointerId!==stJ.id)return;stJ.id=null;stJ.x=stJ.y=0;jb.classList.remove('on');jb.style.left=jb.style.top='';jk.style.transform=''};
   ['pointerup','pointercancel'].forEach(n=>zl.addEventListener(n,up))}
 function stSetPause(v){if(!G||G.over)return;stPause=v;$('#stTit').textContent='JEDA';$('#stSub').textContent='';$('#stres').style.display='';$('#stag').style.display='none';$('#stpov').classList.toggle('on',v)}
-$('#stx').onclick=()=>stSetPause(true);$('#stres').onclick=()=>stSetPause(false);$('#stag').onclick=storyStart;$('#stmenu').onclick=toMenu;
+$('#stx').onclick=()=>stSetPause(true);$('#stres').onclick=()=>stSetPause(false);$('#stag').onclick=()=>storyStart(stHunt||undefined);$('#stmenu').onclick=toMenu;
 addEventListener('keydown',e=>{if(!$('#story').classList.contains('on')||!G)return;const k=e.key.length===1?e.key.toLowerCase():e.key;stKeys[k]=true;
   if(k==='Escape'||k==='p')stSetPause(!stPause);else if(/^[0-9]$/.test(k)){const i=k==='0'?9:+k-1;if(G.sks[i])stSkill(G.sks[i].id)}else if(k==='m')stDrink();
   if(k.startsWith('Arrow'))e.preventDefault()});
 addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;delete stKeys[k]});
+(()=>{const M=window.Motion;if(!M||!M.animate)return;
+ new MutationObserver(ms=>ms.forEach(m=>{const e=m.target;if(!e.classList)return;const was=/(^|\s)on(\s|$)/.test(m.oldValue||''),is=e.classList.contains('on');if(was===is)return;
+  if(e.classList.contains('modal')){const b=e.querySelector('.sbox');if(!b)return;try{if(is)M.animate(b,{opacity:[0,1],transform:['translateY(26px) scale(.94)','translateY(0px) scale(1)']},{duration:.38,ease:[.16,1,.3,1]});else M.animate(b,{opacity:[1,0],transform:['translateY(0px) scale(1)','translateY(18px) scale(.96)']},{duration:.22,ease:'easeIn'})}catch(x){}}
+  else if(is&&e.classList.contains('screen')&&e.id!=='story'&&e.id!=='game'){try{M.animate(e,{opacity:[0,1],transform:['translateY(16px)','translateY(0px)']},{duration:.4,ease:[.16,1,.3,1]}).finished.then(()=>{e.style.transform=''})}catch(x){}}
+ })).observe(document.body,{attributes:true,attributeFilter:['class'],attributeOldValue:true,subtree:true})})();
+(()=>{if(!window.Lenis)return;const mp=new WeakMap(),inst=[];let tm=0;
+ const scan=()=>{const c=[...document.querySelectorAll('#app .sbox,#app .screen,#app .wg,#app [id$="b"]')].filter(e=>!e.closest('#story,#game,#lanes')&&e.offsetParent&&(()=>{const o=getComputedStyle(e).overflowY;return(o==='auto'||o==='scroll')&&e.scrollHeight>e.clientHeight+4})());
+  c.filter(e=>!c.some(o=>o!==e&&e.contains(o))).forEach(e=>{if(mp.has(e))return;try{const l=new Lenis({wrapper:e,content:e,duration:1.1,smoothWheel:true,syncTouch:false,gestureOrientation:'vertical'});mp.set(e,l);inst.push([e,l])}catch(x){}})};
+ const q=()=>{clearTimeout(tm);tm=setTimeout(scan,250)};
+ new MutationObserver(q).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});scan();
+ const tick=t=>{for(let i=inst.length-1;i>=0;i--){const[e,l]=inst[i];if(!e.isConnected){try{l.destroy()}catch(x){}inst.splice(i,1)}else l.raf(t)}requestAnimationFrame(tick)};requestAnimationFrame(tick)})();
 applyCfg();applySet();updateModes();drawMat();loadCfg();requestAnimationFrame(t=>{lastT=t;loop(t)});
 
 })();
