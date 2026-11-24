@@ -459,9 +459,9 @@ body.portrait #rot{display:flex}
 #stC #go:active{box-shadow:0 3px 0 #065f46,0 0 0 8px #0f172a}
 .shd{display:flex;align-items:center;gap:10px;margin-bottom:14px}.shd h2{margin:0!important;flex:1}
 .shd .sm{padding:9px 12px;font-size:.72rem}
-.seg{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 10px}
-.seg button{flex:1 1 auto;min-width:64px;font:inherit;font-weight:700;font-size:.72rem;color:#cbd5e1;background:#1e293b;border:2px solid #334155;border-radius:10px;padding:9px 8px;cursor:pointer}
-.seg button.s{background:#4f46e5;border-color:#818cf8;color:#fff}
+.sgs{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 10px}
+.sgs button{flex:1 1 auto;min-width:64px;font:inherit;font-weight:700;font-size:.72rem;color:#cbd5e1;background:#1e293b;border:2px solid #334155;border-radius:10px;padding:9px 8px;cursor:pointer}
+.sgs button.s{background:#4f46e5;border-color:#818cf8;color:#fff}
 #pwf .in{margin-top:6px}
 #app #qx .sbox{width:min(520px,92%)!important;min-height:0!important;height:auto;max-height:96%;border-radius:22px}
 #stdpad{display:none;position:absolute;left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));z-index:4;width:clamp(138px,28vmin,190px);height:clamp(138px,28vmin,190px);grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -476,6 +476,52 @@ body.portrait #rot{display:flex}
 #coins{left:auto;right:calc(clamp(42px,9vh,60px) + 12px);transform:none}
 @media (max-width:720px),(max-aspect-ratio:1/1){#coins{margin-left:auto}#btnSet{position:static}}
 #shopb .it:not(.sp),#garb .it:not(.sp){cursor:pointer}
+
+/* ===== perbaikan tampilan terpotong: semua orientasi & perangkat ===== */
+:root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px)}
+@supports (height:100dvh){#app{bottom:auto;height:100dvh}}
+.screen{padding-left:max(3vw,var(--sal));padding-right:max(3vw,var(--sar));padding-top:max(2vh,var(--sat));padding-bottom:max(6vh,calc(var(--sab) + 16px))}
+#app .modal,#app #set,#app #exit,#app #ins,#app #qx{padding-left:max(3vw,var(--sal));padding-right:max(3vw,var(--sar));padding-top:max(2.5vh,var(--sat));padding-bottom:max(2.5vh,var(--sab))}
+#tl{left:max(2vw,var(--sal));top:max(2vh,var(--sat))}#tr{right:max(2vw,var(--sar));top:max(2vh,var(--sat))}
+.toast{top:max(12px,calc(var(--sat) + 6px))}
+/* menu utama: tidak ada isi yang terpotong (bisa digeser bila layar sangat pendek) */
+#menu{overflow-x:hidden;overflow-y:auto;grid-template-rows:auto minmax(min-content,1fr) auto;padding-top:max(2vh,var(--sat));padding-left:max(2.2vw,var(--sal));padding-right:max(2.2vw,var(--sar));padding-bottom:calc(max(2vh,var(--sab)) + 20px)}
+#menu::before,#menu::after{position:fixed}
+@media (max-width:720px),(max-aspect-ratio:1/1){
+  #menu{grid-template-rows:auto minmax(min-content,1fr) auto auto auto;padding-left:max(3vw,var(--sal));padding-right:max(3vw,var(--sar))}
+  #hud{padding-right:0}
+}
+@media (max-height:640px) and (max-aspect-ratio:1/1){#mhead .lgimg{max-height:22vh}#rcol .modes .b3{min-height:44px}.frbox{min-height:96px}#rcol{min-height:96px}}
+@media (max-height:420px) and (min-aspect-ratio:1/1){#mhead .lgimg{max-height:34vh}#rcol .modes .b3{min-height:38px;padding:.6vh .6vw}#menu #start{min-height:40px}#pill .av{width:36px;height:36px}.frbox{padding:.8vh .7vw}}
+/* layar tengah/hasil/jeda: isi tinggi tetap bisa dijangkau */
+#win{justify-content:flex-start}#win>:first-child{margin-top:auto}#win>:last-child{margin-bottom:auto}
+#pov,#stpov{justify-content:flex-start;overflow-y:auto;padding-top:max(2vh,var(--sat));padding-bottom:max(2vh,var(--sab))}
+#pov>:first-child,#stpov>:first-child{margin-top:auto}#pov>:last-child,#stpov>:last-child{margin-bottom:auto}
+/* area notch di dalam game */
+#top{height:calc(56px + var(--sat));padding:var(--sat) max(16px,var(--sar)) 0 max(16px,var(--sal))}
+#lanes{padding-left:var(--sal);padding-right:var(--sar)}
+.badge{top:calc(62px + var(--sat))}.badge.l{left:max(4px,var(--sal))}.badge.r{right:max(4px,var(--sar))}
+.itbar{right:max(8px,var(--sar));top:calc(104px + var(--sat))}.eye{left:max(8px,var(--sal));top:calc(104px + var(--sat))}
+.pashud{top:calc(62px + var(--sat))}.actbar{left:max(6px,var(--sal))}
+@media (max-aspect-ratio:1/1){#top{height:calc(46px + var(--sat));padding:var(--sat) max(10px,var(--sar)) 0 max(10px,var(--sal))}.badge{top:calc(50px + var(--sat))}.pashud{top:calc(50px + var(--sat))}}
+/* landscape pendek: numpad & papan tidak memakan seluruh layar */
+@media (max-height:520px) and (min-aspect-ratio:1/1){
+  #top{height:calc(42px + var(--sat))}.cb{width:32px;height:32px;font-size:.9rem}#timer{padding:2px 14px;font-size:1rem}
+  .badge{top:calc(46px + var(--sat));font-size:.52rem}.av{width:22px;height:22px}.pashud{top:calc(46px + var(--sat))}
+  .itbar,.eye{top:calc(78px + var(--sat))}
+  .padw,.pad{flex-basis:clamp(128px,46vh,210px)}
+  .pad{gap:4px;padding:5px 8px calc(10px + var(--sab))}.padw .pad{padding:5px 0 calc(10px + var(--sab))}
+  .pp,.pp.ps,.pp.pi{padding-bottom:calc(8px + var(--sab))}
+  .wait{bottom:3%}
+}
+/* layar sempit */
+.sg{grid-template-columns:repeat(auto-fit,minmax(70px,1fr))}
+.it .inf{min-width:0;overflow-wrap:anywhere}.row>span,.row>div{min-width:0}
+.sbox table{display:block;max-width:100%;overflow-x:auto}
+@media (max-width:380px){.it{flex-wrap:wrap}.it .acts{flex-direction:row;flex-wrap:wrap;width:100%}.it .acts .sm{flex:1 1 auto}.tabs button{padding:7px 9px}}
+#sthud{padding-top:max(8px,var(--sat))}
+#stbn,#stpov{padding-left:max(4vw,var(--sal));padding-right:max(4vw,var(--sar))}
+@media (max-height:420px){#stsk{gap:6px;max-height:86%}.stb{width:clamp(44px,13vmin,60px);height:clamp(44px,13vmin,60px)}#stdpad{width:clamp(120px,40vh,160px);height:clamp(120px,40vh,160px)}}
 </style>
 </head>
 <body>
@@ -534,11 +580,11 @@ body.portrait #rot{display:flex}
     <div class="shd"><button id="sback" class="sm" type="button">◀ KEMBALI</button><h2>⚙ PENGATURAN</h2></div>
     <div class="sl">🎨 GRAFIK</div>
     <div class="row l"><div>Kualitas Grafik<small id="gqd"></small></div></div>
-    <div class="seg" id="gqs"><button type="button" data-v="0">Sangat Ringan</button><button type="button" data-v="1">Ringan</button><button type="button" data-v="2">Sedang</button><button type="button" data-v="3">Berat</button><button type="button" data-v="4">Sangat Berat</button></div>
+    <div class="sgs" id="gqs"><button type="button" data-v="0">Sangat Ringan</button><button type="button" data-v="1">Ringan</button><button type="button" data-v="2">Sedang</button><button type="button" data-v="3">Berat</button><button type="button" data-v="4">Sangat Berat</button></div>
     <div class="row l"><div>Batas FPS<small>Makin tinggi makin halus, tapi lebih boros baterai. Hasil mengikuti kemampuan layar perangkat.</small></div></div>
-    <div class="seg" id="fpss"><button type="button" data-v="30">30</button><button type="button" data-v="60">60</button><button type="button" data-v="90">90</button><button type="button" data-v="120">120</button><button type="button" data-v="144">144</button></div>
+    <div class="sgs" id="fpss"><button type="button" data-v="30">30</button><button type="button" data-v="60">60</button><button type="button" data-v="90">90</button><button type="button" data-v="120">120</button><button type="button" data-v="144">144</button></div>
     <div class="sl">🎮 KONTROL (Endless Story &amp; Perburuan Wilayah)</div>
-    <div class="seg" id="ctls"><button type="button" data-v="joy">🕹 Joystick</button><button type="button" data-v="dpad">✚ D-Pad</button></div>
+    <div class="sgs" id="ctls"><button type="button" data-v="joy">🕹 Joystick</button><button type="button" data-v="dpad">✚ D-Pad</button></div>
     <div class="sl">📺 TAMPILAN</div>
     <div class="row"><span>Layar Penuh<small>Tampilkan game memenuhi layar</small></span><button class="sm" id="sfs" type="button">⛶ Aktifkan</button></div>
     <div class="sl">AUDIO</div>
