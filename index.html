@@ -738,7 +738,7 @@ const xs=()=>{X._t=Date.now();try{localStorage.setItem(XK(),JSON.stringify(X))}c
 /* ===== sinkron data akun ke cloud (tabel user_state) ===== */
 let cloudT=0,cloudOff=false,cloudWarn=false,cloudBusy=false;
 const cloudData=()=>({X:X,P:{bgm:S.bgm,sfx:S.sfx,vb:S.vb,vs:S.vs,_t:S._t||0}});
-function cloudFail(e){const m=((e&&e.message)||'')+' '+((e&&e.code)||'');if(/relation|does not exist|schema cache|42P01|PGRST205|permission|row-level/i.test(m)){cloudOff=true;if(!cloudWarn){cloudWarn=true;console.warn('Sinkron cloud belum aktif: '+m);try{toast('⚠ Sinkron antar perangkat belum aktif. Jalankan supabase_user_state.sql di Supabase.')}catch(x){}}}}
+function cloudFail(e){const m=((e&&e.message)||'')+' '+((e&&e.code)||'');if(/relation|does not exist|schema cache|42P01|PGRST205|permission|row-level/i.test(m)){cloudOff=true;if(!cloudWarn){cloudWarn=true;console.warn('Sinkron cloud belum aktif: '+m);try{toast('⚠ Sinkron antar perangkat belum aktif. Jalankan supabase_bps.sql (versi terbaru) di Supabase SQL Editor.')}catch(x){}}}}
 const sj=o=>JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
 const xPristine=x=>{const a=Object.assign(XD(),x);delete a._t;const b=XD();delete b._t;return sj(a)===sj(b)};
 function cloudPush(){if(!sb||!user||cloudOff)return;clearTimeout(cloudT);cloudT=setTimeout(cloudFlush,1200)}
