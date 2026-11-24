@@ -539,6 +539,7 @@ html,body{overscroll-behavior:none}
 #btnSet{right:calc(var(--bs) + 10px);background:#cfd5df;color:#0f172a;font-size:clamp(1.3rem,4.4vh,2rem)}
 #btnQuit{right:0;background:#e11d48;color:#fff;font-size:clamp(1.1rem,3.8vh,1.7rem);font-weight:900}
 #btnQuit:active,#btnSet:active{transform:scale(.94)}
+#btnSet svg,#btnQuit svg{display:block;pointer-events:none;flex:none}
 #coins{right:calc(var(--bs)*2 + 22px)}
 #hud{padding-right:calc(var(--bs)*2 + 22px)}
 @media (max-aspect-ratio:1/1){#btnSet,#btnQuit{position:static;flex:none}#coins{margin-left:auto;right:auto}#hud{padding-right:0}}
@@ -583,7 +584,7 @@ html,body{overscroll-behavior:none}
   <div id="hud">
     <button id="pill" type="button" aria-label="Akun"><span class="av"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#60a5fa"/><path d="M12 62c1-14 9-20 20-20s19 6 20 20z" fill="#e5484d"/><ellipse cx="32" cy="30" rx="10" ry="12" fill="#f3d9c8"/><path d="M21 28c0-12 6-16 12-16s11 4 10 16c-3-5-6-7-11-7s-8 2-11 7z" fill="#1b1b1f"/></svg></span><span class="pt"><b id="pName">Masuk</b><span id="pUid">uid: -</span><span id="pLvl">level: -</span></span></button>
     <div id="coins"><i>🪙</i><b id="cVal">0</b><button id="cPlus" type="button" aria-label="Top up koin">+</button></div>
-    <button id="btnSet" type="button" aria-label="Pengaturan">⚙️</button><button id="btnQuit" type="button" aria-label="Keluar dari game">⏻</button>
+    <button id="btnSet" type="button" aria-label="Pengaturan"><svg viewBox="0 0 24 24" width="62%" height="62%" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button id="btnQuit" type="button" aria-label="Keluar dari game"><svg viewBox="0 0 24 24" width="58%" height="58%" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2.5v9"/><path d="M6.3 6.2a8.5 8.5 0 1 0 11.4 0"/></svg></button>
   </div>
   <div id="lcol">
     <button class="ico" id="btnShop" type="button"><span>🏪</span><small>Store</small></button>
